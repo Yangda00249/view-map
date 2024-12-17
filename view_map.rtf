@@ -1,0 +1,3539 @@
+{\rtf1\ansi\ansicpg936\cocoartf2818
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="zh-CN">\
+<head>\
+    <meta charset="UTF-8">\
+    <!-- \uc0\u32593 \u39029 \u26631 \u39064  -->\
+    <title>\{\{ map.project.name \}\} - \{\{ map.name \}\}/\{\{ map.floor \}\}</title>\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  Bootstrap CSS -->\
+    <link rel="stylesheet" href="\{\{ url_for('static', filename='css/bootstrap.min.css') \}\}">\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320 \u33258 \u23450 \u20041  CSS -->\
+    <link rel="stylesheet" href="\{\{ url_for('static', filename='css/styles.css') \}\}">\
+    <!-- CSRF \uc0\u20196 \u29260  -->\
+    <meta name="csrf-token" content="\{\{ csrf_token() \}\}">\
+    <style>\
+        /* \uc0\u26679 \u24335 \u29992 \u20110 \u34920 \u26684  */\
+        .mark-summary table \{\
+            width: 100%;\
+            border-collapse: collapse;\
+            margin-bottom: 5px;\
+            table-layout: auto; /* \uc0\u33258 \u36866 \u24212 \u34920 \u26684 \u24067 \u23616  */\
+            white-space: nowrap; /* \uc0\u38450 \u27490 \u25991 \u23383 \u25442 \u34892  */\
+            font-size: 14px; /* \uc0\u22522 \u30784 \u23383 \u20307 \u22823 \u23567  */\
+        \}\
+\
+        .mark-summary th,\
+        .mark-summary td \{\
+            padding: 3px;\
+            border: 1px solid #ddd;\
+            text-align: center;\
+            vertical-align: middle;\
+            line-height: 1.4; /* \uc0\u35843 \u25972 \u34892 \u39640  */\
+        \}\
+\
+        .mark-summary th[rowspan] \{\
+            /* \uc0\u22266 \u23450 \u31532 \u19968 \u21015 \u30340 \u26679 \u24335  */\
+            background-color: #f8f9fa;\
+            font-weight: bold;\
+        \}\
+\
+        .mark-summary td:first-child \{\
+            /* \uc0\u22266 \u23450 \u31532 \u19968 \u21015 \u21333 \u20803 \u26684 \u30340 \u26679 \u24335  */\
+            background-color: #f8f9fa;\
+            font-weight: bold;\
+        \}\
+\
+        .mark-summary .color-circle \{\
+            width: 14px;\
+            height: 14px;\
+            border-radius: 50%;\
+            display: inline-block;\
+            margin-right: 5px;\
+            border: 1px solid #000;\
+        \}\
+\
+        .mark-summary .color-rectangle \{\
+            width: 20px;\
+            height: 15px;\
+            display: inline-block;\
+            margin-right: 5px;\
+            border: 1px solid #000;\
+            border-radius: 4px;\
+            text-align: center;\
+            line-height: 15px;\
+            font-size: 10px;\
+            color: inherit; /* \uc0\u25991 \u23383 \u39068 \u33394 \u36890 \u36807 \u20869 \u32852 \u26679 \u24335 \u35774 \u32622  */\
+        \}\
+\
+        /* \uc0\u20854 \u20182 \u33258 \u23450 \u20041 \u26679 \u24335  */\
+        .mark \{\
+            position: absolute;\
+            z-index: 1; /* \uc0\u35774 \u32622 \u36739 \u20302 \u30340  z-index */\
+            cursor: pointer;\
+            border: 1px solid #000; /* \uc0\u40664 \u35748 \u36793 \u26694 \u39068 \u33394  */\
+            display: flex;\
+            align-items: center;\
+            justify-content: center;\
+            font-weight: bold;\
+            color: inherit; /* \uc0\u25991 \u23383 \u39068 \u33394 \u36890 \u36807 \u20869 \u32852 \u26679 \u24335 \u35774 \u32622  */\
+            box-sizing: border-box; /* \uc0\u21253 \u25324 \u36793 \u26694 \u21644 \u20869 \u36793 \u36317 \u22312 \u20869  */\
+            white-space: nowrap; /* \uc0\u38450 \u27490 \u25991 \u26412 \u25442 \u34892  */\
+            overflow: hidden; /* \uc0\u38450 \u27490 \u25991 \u26412 \u28322 \u20986  */\
+        \}\
+\
+        /* AP\uc0\u26631 \u35760 \u26679 \u24335 \u65306 \u20445 \u25345 \u22278 \u24418  */\
+        .mark:not(.weak-electric-mark) \{\
+            border-radius: 50%;\
+        \}\
+\
+        /* \uc0\u24369 \u30005 \u20117 \u26631 \u35760 \u26679 \u24335 \u65306 \u31446 \u21521 \u38271 \u26041 \u24418 \u65292 \u31354 \u24515  */\
+        .weak-electric-mark \{\
+            background-color: transparent; /* \uc0\u36879 \u26126 \u32972 \u26223  */\
+            border: 1px solid;\
+            border-radius: 2px; /* \uc0\u22278 \u35282 \u65292 \u21487 \u26681 \u25454 \u38656 \u35201 \u35843 \u25972  */\
+            display: flex; /* \uc0\u20351 \u25991 \u26412 \u23621 \u20013  */\
+            align-items: center; /* \uc0\u22402 \u30452 \u23621 \u20013  */\
+            justify-content: center; /* \uc0\u27700 \u24179 \u23621 \u20013  */\
+            -webkit-text-stroke: 0.2px black;\
+        \}\
+\
+        .label \{\
+            position: absolute;\
+            border: 1px solid;\
+            background-color: rgba(255, 255, 255, 0.6);\
+            padding: 1px 1px;\
+            border-radius: 2px;\
+            display: inline-block;\
+            pointer-events: none;\
+            white-space: nowrap; /* \uc0\u38450 \u27490 \u25991 \u26412 \u25442 \u34892  */\
+            overflow: hidden; /* \uc0\u38450 \u27490 \u25991 \u26412 \u28322 \u20986  */\
+            font-size: 14px; /* \uc0\u22522 \u30784 \u23383 \u20307 \u22823 \u23567  */\
+            transform: translate(-50%, 40%); /* \uc0\u27700 \u24179 \u23621 \u20013 \u65292 \u22402 \u30452 \u21521 \u19978 \u20559 \u31227  */\
+            -webkit-text-stroke: 0.2px black;\
+        \}\
+\
+        /* \uc0\u32465 \u23450 \u26631 \u31614 \u30340 \u26679 \u24335  */\
+        .binding-label \{\
+            position: absolute;\
+            transform: translate(-50%, -100%); /* \uc0\u27700 \u24179 \u23621 \u20013 \u65292 \u22402 \u30452 \u21521 \u19978 \u20559 \u31227  */\
+            z-index: 2; /* \uc0\u30830 \u20445 \u22312  AP \u26631 \u35760 \u20043 \u19978  */\
+            background-color: rgba(255, 255, 255, 0.5);\
+            border: 1px solid; /* \uc0\u36793 \u26694  */\
+            border-radius: 2px; /* \uc0\u22278 \u35282  */\
+            padding: 1px 1px; /* \uc0\u20869 \u36793 \u36317  */\
+            display: inline-block;\
+            white-space: nowrap; /* \uc0\u38450 \u27490 \u25442 \u34892  */\
+            box-sizing: border-box;\
+            font-weight: bold;\
+            /* \uc0\u39318 \u20808 \u23581 \u35797 \u20351 \u29992  -webkit-text-stroke */\
+            -webkit-text-stroke: 0.2px black;\
+            /* \uc0\u20351 \u29992  text-shadow \u20316 \u20026 \u21518 \u22791 \u26041 \u26696  */\
+        \}\
+\
+        #main-title \{\
+            font-size: 27px;\
+            margin-bottom: 10px;\
+            font-weight: bold;\
+        \}\
+\
+        /* \uc0\u32626 \u21517 \u34920 \u21333 \u30340 \u26679 \u24335  */\
+        #signatureFormContainer \{\
+            margin-top: 5px;\
+        \}\
+        #signatureFormContainer table \{\
+            width: 100%;\
+            border-collapse: collapse;\
+            margin-top: 3px;\
+        \}\
+        #signatureFormContainer td \{\
+            border: 1px solid #ddd;\
+            padding: 5px;\
+            line-height: 1.2; /* \uc0\u35843 \u25972 \u34892 \u39640  */\
+        \}\
+        #signatureFormContainer input \{\
+            width: 100%;\
+            box-sizing: border-box;\
+        \}\
+\
+        /* \uc0\u20351 \u29992 padding-bottom\u20445 \u25345 \u38271 \u23485 \u27604  */\
+        #map-container \{\
+            margin-top: 3px;\
+            position: relative;\
+            width: 100%;\
+            height: auto; /* \uc0\u39640 \u24230 \u30001 JavaScript\u21160 \u24577 \u35774 \u32622  */\
+            overflow: hidden;\
+        \}\
+\
+        #panzoom \{\
+            position: absolute;\
+            top: 0;\
+            left: 0;\
+            width: 100%;\
+            height: 100%;\
+        \}\
+\
+        #panzoom img \{\
+            width: 100%;\
+            height: 100%;\
+            object-fit: contain;\
+            display: block;\
+        \}\
+\
+        /* \uc0\u25302 \u21160 \u26102 \u30340 \u26679 \u24335  */\
+        .dragging \{\
+            opacity: 0.6;\
+        \}\
+\
+        /* \uc0\u21152 \u36733 \u21160 \u30011 \u26679 \u24335  */\
+        #mapLoadingOverlay \{\
+            display: flex;\
+            align-items: center;\
+            justify-content: center;\
+            width: 100%;\
+            height: 100%;\
+            background-color: rgba(255, 255, 255, 0.7); /* \uc0\u21322 \u36879 \u26126 \u32972 \u26223 \u65292 \u21487 \u26681 \u25454 \u38656 \u35201 \u35843 \u25972  */\
+            z-index: 10; /* \uc0\u30830 \u20445 \u22312 \u26631 \u35760 \u20043 \u19978  */\
+        \}\
+\
+        /* \uc0\u30830 \u20445 \u21152 \u36733 \u21160 \u30011 \u22312 \u26631 \u35760 \u20043 \u19978  */\
+        #mapLoadingOverlay .spinner-border \{\
+            width: 3rem;\
+            height: 3rem;\
+        \}\
+\
+        /* \uc0\u33258 \u36866 \u24212 \u23383 \u20307 \u22823 \u23567  */\
+        @media (max-width: 768px) \{\
+            .mark-summary table \{\
+                font-size: 12px;\
+            \}\
+            .label \{\
+                font-size: 12px;\
+            \}\
+        \}\
+\
+        @media (max-width: 576px) \{\
+            .mark-summary table \{\
+                font-size: 10px;\
+            \}\
+            .label \{\
+                font-size: 10px;\
+            \}\
+        \}\
+    </style>\
+</head>\
+<body>\
+    <div class="container mt-4">\
+        <!-- \uc0\u39029 \u38754 \u20027 \u26631 \u39064  -->\
+        <h1 id="main-title">\{\{ map.project.name \}\} - \{\{ map.name \}\}/\{\{ map.floor \}\}</h1>\
+        <!-- \uc0\u36820 \u22238 \u39033 \u30446 \u35814 \u24773 \u25353 \u38062 \u12289 AP\u28857 \u20301 \u35268 \u26684 \u19979 \u25289 \u33756 \u21333 \u21450 \u36824 \u21407 \u35270 \u35282 \u21644 \u23548 \u20986 PDF\u25353 \u38062  -->\
+        <div class="d-flex align-items-center mb-3">\
+            <a href="\{\{ url_for('main.project_detail', project_id=map.project.id) \}\}" class="btn btn-secondary">\uc0\u36820 \u22238 \u39033 \u30446 \u35814 \u24773 </a>\
+\
+            <!-- AP\uc0\u28857 \u20301 \u35268 \u26684 \u19979 \u25289 \u33756 \u21333  -->\
+            <div class="dropdown ml-3">\
+                <button class="btn btn-primary dropdown-toggle" type="button" id="apSizeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
+                    AP\uc0\u28857 \u20301 \u35268 \u26684 \u65306 \u20013 \
+                </button>\
+                <div class="dropdown-menu" aria-labelledby="apSizeDropdown">\
+                    <a class="dropdown-item" href="#" data-size="large">\uc0\u22823 </a>\
+                    <a class="dropdown-item" href="#" data-size="medium">\uc0\u20013 </a>\
+                    <a class="dropdown-item" href="#" data-size="small">\uc0\u23567 </a>\
+                </div>\
+            </div>\
+            \
+            <!-- \uc0\u28155 \u21152 \'93\u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \'94\u25353 \u38062  -->\
+            <button class="btn btn-primary ml-3" id="configureQuickAddButton">\uc0\u37197 \u32622 \u24555 \u25463 \u28155 \u21152 </button>\
+            <!-- \uc0\u28155 \u21152 \'93\u21152 \u36733 /\u20851 \u38381 AP\u32465 \u23450 \'94\u25353 \u38062  -->\
+            <button class="btn btn-primary ml-3" id="toggleApBindingButton">\uc0\u21152 \u36733 AP\u32465 \u23450 </button>\
+\
+            <!-- \uc0\u21491 \u20391 \u25353 \u38062 \u32452  -->\
+            <div class="ml-auto d-flex align-items-center">\
+			    <button class="btn btn-warning" id="undoButton" disabled>\uc0\u25764 \u38144 \u25805 \u20316 </button>\
+                <button class="btn btn-info mr-2" id="restoreViewButton">\uc0\u36824 \u21407 \u35270 \u35282 </button>\
+                <button class="btn btn-success" id="exportPdfButton">\uc0\u23548 \u20986 PDF</button>\
+				<button class="btn btn-primary" id="cachePdfButton">\uc0\u32531 \u23384 PDF</button>\
+            </div>\
+        </div>\
+\
+        <!-- \uc0\u23454 \u26102 \u27719 \u24635 \u34920 \u21333  -->\
+        <div id="mark-summary" class="mark-summary">\
+            <table id="mark-summary-table">\
+                <thead>\
+                    <tr>\
+                        <th rowspan="3" style="vertical-align: middle;"></th>\
+                        <th colspan="7">\uc0\u39068 \u33394 \u32479 \u35745 </th> <!-- \u20551 \u35774 \u26368 \u22810 \u26377 7\u31181 \u39068 \u33394 \u65292 \u21160 \u24577 \u35843 \u25972  -->\
+                    </tr>\
+                </thead>\
+                <tbody>\
+                    <tr>\
+                        <td>\uc0\u22270 \u31034 </td>\
+                        <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u39068 \u33394 \u22270 \u31034 \u21015  -->\
+                    </tr>\
+                    <tr>\
+                        <td>\uc0\u35828 \u26126 </td>\
+                        <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u35828 \u26126 \u21015  -->\
+                    </tr>\
+                    <tr>\
+                        <td>\uc0\u25968 \u37327 </td>\
+                        <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u25968 \u37327 \u21015  -->\
+                    </tr>\
+                </tbody>\
+            </table>\
+        </div>\
+        <div id="map-container">\
+            <!-- \uc0\u21152 \u36733 \u21160 \u30011  -->\
+            <div id="mapLoadingOverlay">\
+                <div class="spinner-border text-primary" role="status">\
+                    <span class="sr-only">\uc0\u21152 \u36733 \u20013 ...</span>\
+                </div>\
+            </div>\
+            \
+            <div id="panzoom">\
+                <img id="map-image" src="\{\{ url_for('static', filename='images/' + map.project.name + '/' + map.image_filename) \}\}" alt="\{\{ map.name \}\}" />\
+                \{% for mark in marks %\}\
+                    \{% if mark.type == 'WeakElectric' %\}\
+                        <div \
+                            class="mark weak-electric-mark" \
+                            id="mark-\{\{ mark.id \}\}"\
+                            style="top: \{\{ mark.y \}\}%; left: \{\{ mark.x \}\}%; border-color: \{\{ mark.color \}\}; color: \{\{ mark.color \}\};"\
+                            data-mark-id="\{\{ mark.id \}\}"\
+                            data-x="\{\{ mark.x \}\}"\
+                            data-y="\{\{ mark.y \}\}"\
+                            data-type="\{\{ mark.type \}\}"\
+                            data-has-bindings="\{\{ 'true' if mark.bound_aps else 'false' \}\}"\
+                            title="\{\{ mark.label \}\}"\
+                            draggable="false"\
+                        >\
+                            IDF\
+                        </div>\
+                        \{% if mark.label %\}\
+                            <div class="label" style="top: calc(\{\{ mark.y \}\}% + 1px); left: \{\{ mark.x \}\}%;" data-mark-id="\{\{ mark.id \}\}">\
+                                \{\{ mark.label \}\}\
+                            </div>\
+                        \{% endif %\}\
+                    \{% else %\}\
+                        <div \
+                            class="mark" \
+                            id="mark-\{\{ mark.id \}\}"\
+                            style="top: \{\{ mark.y \}\}%; left: \{\{ mark.x \}\}%; background-color: \{\{ mark.color \}\};"\
+                            data-mark-id="\{\{ mark.id \}\}"\
+                            data-x="\{\{ mark.x \}\}"\
+                            data-y="\{\{ mark.y \}\}"\
+                            data-type="\{\{ mark.type \}\}"\
+                            data-weak-electric-id="\{\{ mark.weak_electric_id if mark.is_ap() else '' \}\}"\
+                            title="\{\{ mark.label \}\}\{% if mark.weak_electric_id %\} (\uc0\u32465 \u23450 \u21040  WeakElectric ID: \{\{ mark.weak_electric_id \}\})\{% endif %\}"\
+                            draggable="false"\
+                        ></div>\
+                        \{% if mark.label %\}\
+                            <div class="label" style="top: calc(\{\{ mark.y \}\}% + 1px); left: \{\{ mark.x \}\}%;" data-mark-id="\{\{ mark.id \}\}">\
+                                \{\{ mark.label \}\}\
+                            </div>\
+                        \{% endif %\}\
+                    \{% endif %\}\
+                \{% endfor %\}\
+            </div>\
+        </div>\
+    <p class="mt-3" style="color: blue;">\
+	    \uc0\u25805 \u20316 \u35828 \u26126 \u65306 <br>\
+        \uc0\u24038 \u38190 \u28857 \u20987 \u31354 \u30333 \u21306 \u22495 \u28155 \u21152 \u26631 \u35760 \u65307 \u28857 \u20987 \u26631 \u35760 \u21487 \u32534 \u36753 \u25110 \u21024 \u38500 \u65307 \u25353 \u20303 Ctrl\u38190 (Mac\u31995 \u32479 \u20026 Command\u38190 )+\u24038 \u38190 \u28857 \u20987 \u26631 \u35760 \u25235 \u21462 \u65292 \u31227 \u21160 \u40736 \u26631 \u25351 \u23450 \u20301 \u32622 \u21333 \u20987 \u25918 \u19979 \u12290 <br>\
+        \uc0\u28378 \u36718 \u32553 \u25918 \u22270 \u32440 \u22823 \u23567 \u65307 \u21491 \u38190 \u25302 \u21160 \u22270 \u32440 \u24179 \u31227 \u65307 \u25353 \u20303 shift\u24038 \u38190 \u28857 \u20987 \u25191 \u34892 \u24555 \u25463 \u28155 \u21152 \u21644 \u21024 \u38500 \u65307 \u25353 \u20303 shift\u21491 \u38190 \u28857 \u20987 \u25191 \u34892 \u24555 \u25463 \u32534 \u36753 \u65307 <br>\
+		\uc0\u25191 \u34892 \u25764 \u38144 \u21487 \u20197 \u22238 \u36864 \u19968 \u27493 \u25805 \u20316 \u65288 \u26368 \u22823 \u35760 \u24405 50\u27425 \u65289 \u65292 \u21487 \u20197 \u23545 \u35823 \u25805 \u20316 \u36827 \u34892 \u22238 \u36864 \u65292 \u24555 \u25463 \u38190 Ctrl(Mac\u31995 \u32479 \u20026 Command\u38190 )+Z\u12290 <br>\
+		\uc0\u31227 \u21160 \u31471 \u35828 \u26126 \u65306 <br>\
+        \uc0\u22312 \u31227 \u21160 \u31471 \u20013 \u65288 \u25163 \u26426 \u12289 \u24179 \u26495 \u65289 \u22914 \u26524 \u37197 \u32622 \u20102 \u24555 \u25463 \u28155 \u21152 \u65292 \u28857 \u20987 \u22270 \u32440 \u25191 \u34892 \u24555 \u25463 \u28155 \u21152 \u65307 \u22312 \u24555 \u25463 \u28155 \u21152 \u20013 \u28165 \u31354 \u37197 \u32622 \u24674 \u22797 \u20026 \u26222 \u36890 \u28155 \u21152 \u12290 <br>\
+		\uc0\u31227 \u21160 \u31471 \u20013 \u38271 \u25353 AP\u25110 \u24369 \u30005 \u20117 \u23454 \u29616 \u25235 \u21462 \u25805 \u20316 \u65292 \u22312 \u26032 \u30340 \u22320 \u26041 \u28857 \u20987 \u25918 \u19979 \u65307 \u31227 \u21160 \u31471 \u20013 \u26242 \u19981 \u25903 \u25345 \u24555 \u36895 \u21024 \u38500 \u21151 \u33021 \u12290 \
+    </p>\
+    <!-- \uc0\u28155 \u21152 \'93\u20351 \u29992 /\u21462 \u28040 \u32626 \u21517 \'94\u25353 \u38062  -->\
+    <div id="signature-buttons" class="mb-3">\
+        \{% if signature_info.drawer_name and signature_info.drawing_time %\}\
+            <!-- \uc0\u23384 \u22312 \u32626 \u21517 \u20449 \u24687 \u26102 \u26174 \u31034 \'93\u21462 \u28040 \u32626 \u21517 \'94\u21644 \'93\u20445 \u23384 \u32626 \u21517 \'94\u25353 \u38062  -->\
+            <button id="cancelSignatureButton" class="btn btn-secondary">\uc0\u21462 \u28040 \u32626 \u21517 </button>\
+            <button id="saveSignatureButton" class="btn btn-success">\uc0\u20445 \u23384 \u32626 \u21517 </button>\
+        \{% else %\}\
+            <!-- \uc0\u19981 \u23384 \u22312 \u32626 \u21517 \u20449 \u24687 \u26102 \u26174 \u31034 \'93\u20351 \u29992 \u32626 \u21517 \'94\u25353 \u38062  -->\
+            <button id="useSignatureButton" class="btn btn-primary">\uc0\u20351 \u29992 \u32626 \u21517 </button>\
+        \{% endif %\}\
+    </div>\
+    <!-- \uc0\u32626 \u21517 \u34920 \u21333 \u23481 \u22120  -->\
+    <div id="signatureFormContainer" class="mark-summary" \
+         \{% if signature_info.drawer_name and signature_info.drawing_time %\}\
+             style="display: block; margin-bottom: 10px;"\
+         \{% else %\}\
+             style="display: none; margin-bottom: 10px;"\
+         \{% endif %\}>\
+        <table id="signatureTable" border="1" cellpadding="5" style="width: 100%; border-collapse: collapse;">\
+            <tr>\
+                <td style="width: 15%;">\uc0\u32472 \u21046 \u20154 \u65306 </td>\
+                <td style="width: 35%;">\
+                    <input type="text" id="drawerName" class="form-control" placeholder="\uc0\u35831 \u36755 \u20837 \u32472 \u21046 \u20154 "\
+                           value="\{\{ signature_info.drawer_name or '' \}\}" required>\
+                </td>\
+                <td style="width: 15%;">\uc0\u32472 \u21046 \u26102 \u38388 \u65306 </td>\
+                <td style="width: 35%;">\
+                    <input type="text" id="drawingTime" class="form-control" readonly\
+                           value="\{\{ signature_info.drawing_time or '' \}\}">\
+                </td>\
+            </tr>\
+        </table>\
+    </div>\
+    </div>\
+\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  jQuery -->\
+    <script src="\{\{ url_for('static', filename='js/jquery.min.js') \}\}"></script>\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  Popper.js -->\
+    <script src="\{\{ url_for('static', filename='js/popper.min.js') \}\}"></script>\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  Bootstrap JS -->\
+    <script src="\{\{ url_for('static', filename='js/bootstrap.min.js') \}\}"></script>\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  Panzoom JS -->\
+    <script src="\{\{ url_for('static', filename='js/panzoom.min.js') \}\}"></script>\
+    <!-- \uc0\u24341 \u20837 \u26412 \u22320  jsPDF \u21644  html2canvas -->\
+    <script src="\{\{ url_for('static', filename='js/jspdf.umd.min.js') \}\}"></script>\
+    <script src="\{\{ url_for('static', filename='js/html2canvas.min.js') \}\}"></script>\
+\
+    <!-- \uc0\u33258 \u23450 \u20041 \u33050 \u26412  -->\
+    <script>\
+\
+    document.addEventListener('DOMContentLoaded', () => \{\
+        const panzoomElement = document.getElementById('panzoom');\
+        const mapImage = document.getElementById('map-image');\
+        const mapContainer = document.getElementById('map-container');\
+        const mapLoadingOverlay = document.getElementById('mapLoadingOverlay'); // \uc0\u33719 \u21462 \u21152 \u36733 \u21160 \u30011 \u20803 \u32032 \
+        const toggleSignatureButton = document.getElementById('toggleSignatureButton');\
+        const signatureFormContainer = document.getElementById('signatureFormContainer');\
+        const drawingTimeInput = document.getElementById('drawingTime');\
+        const drawerNameInput = document.getElementById('drawerName');\
+        // \uc0\u33719 \u21462 \u32626 \u21517 \u30456 \u20851 \u20803 \u32032 \
+        const useSignatureButton = document.getElementById('useSignatureButton');\
+        const saveSignatureButton = document.getElementById('saveSignatureButton');\
+        const cancelSignatureButton = document.getElementById('cancelSignatureButton');\
+        // \uc0\u33719 \u21462 CSRF Token\
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');\
+        // \uc0\u33719 \u21462 \'93\u24555 \u36895 \u26631 \u31614 \'94\u22797 \u36873 \u26694 \u21644 \u26631 \u31614 \u36755 \u20837 \u26694 \
+        const quickAddAutoLabelCheckbox = document.getElementById('quickAdd_auto_label');\
+        const quickAddMarkLabelInput = document.getElementById('quickAdd_mark_label');\
+		// \uc0\u23450 \u20041 \u21160 \u20316 \u26632 \
+		const actionStack = [];\
+		// \uc0\u23450 \u20041 \u26368 \u22823 \u26632 \u28145 \u24230 \u65288 \u21487 \u36873 \u65289 \
+		const MAX_STACK_SIZE = 50;\
+		\
+        let panzoomInstance;\
+        let grabbedMark = null;\
+        let quickAddConfig = null; // \uc0\u24555 \u36895 \u28155 \u21152 \u21021 \u22987 \u21270 \
+        let apBindingLabelsVisible = false; // \uc0\u29992 \u20110 \u36319 \u36394 \u26631 \u31614 \u26174 \u31034 \u29366 \u24577 \
+        let weakElectricMarksData = \{\}; // \uc0\u23384 \u20648 \u24369 \u30005 \u20117 \u26631 \u35760 \u30340 \u25968 \u25454 \
+        let signatureEnabled = false;\
+        let lastSelectedColor = null;\
+        let lastEnteredLabel = '';\
+        loadWeakElectricData();\
+		// \uc0\u31995 \u32479 \u26816 \u27979 \
+		function isSafari() \{\
+            const ua = navigator.userAgent.toLowerCase();\
+            return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('android');\
+	    \}\
+        function updateBindingLabelForMark(mark) \{\
+            const markId = mark.dataset.markId;\
+            const weakElectricId = mark.getAttribute('data-weak-electric-id');\
+            // \uc0\u31227 \u38500 \u24050 \u26377 \u30340 \u32465 \u23450 \u26631 \u31614 \
+            const existingLabel = document.querySelector(`.binding-label[data-mark-id="$\{markId\}"]`);\
+            if (existingLabel) \{\
+                existingLabel.remove();\
+            \}\
+            if (weakElectricId && apBindingLabelsVisible) \{\
+                const weMark = weakElectricMarksData[weakElectricId];\
+                if (weMark) \{\
+                    // \uc0\u21019 \u24314 \u32465 \u23450 \u26631 \u31614 \
+                    const bindingLabel = document.createElement('div');\
+                    bindingLabel.classList.add('label', 'binding-label');\
+                    bindingLabel.style.color = weMark.color;\
+                    bindingLabel.style.borderColor = weMark.color;\
+                    bindingLabel.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';\
+                    bindingLabel.textContent = weMark.map_floor; // \uc0\u26174 \u31034 \u24369 \u30005 \u20117 \u25152 \u22312 \u27004 \u23618 \
+                    bindingLabel.setAttribute('data-mark-id', markId);\
+                    // \uc0\u35774 \u32622  bindingLabel \u30340 \u20301 \u32622 \u65292 \u19982  mark \u19968 \u33268 \
+                    bindingLabel.style.left = mark.style.left;\
+                    bindingLabel.style.top = mark.style.top;\
+\
+                    // **\uc0\u35774 \u32622 \u23383 \u20307 \u22823 \u23567 **\
+                    const currentSize = getCurrentSize();\
+                    const settings = sizeSettings[currentSize];\
+                    bindingLabel.style.fontSize = settings.labelFontSize;\
+\
+                    panzoomElement.appendChild(bindingLabel);\
+                \}\
+            \}\
+        \}\
+\
+        function loadApBindingLabels() \{\
+            // \uc0\u30830 \u20445 \u24369 \u30005 \u20117 \u25968 \u25454 \u24050 \u21152 \u36733 \
+            if (Object.keys(weakElectricMarksData).length === 0) \{\
+                loadWeakElectricData(loadApBindingLabels);\
+                return;\
+            \}\
+\
+            const apMarks = document.querySelectorAll('.mark:not(.weak-electric-mark)');\
+            apMarks.forEach(mark => \{\
+                updateBindingLabelForMark(mark);\
+            \});\
+        \}\
+\
+        function removeApBindingLabels() \{\
+            const bindingLabels = document.querySelectorAll('.binding-label');\
+            bindingLabels.forEach(label => \{\
+                label.remove();\
+            \});\
+        \}\
+\
+        function loadWeakElectricData(callback) \{\
+            fetch(`/api/get_all_weak_electric_marks/\{\{ project.id \}\}`, \{\
+                method: 'GET',\
+                headers: \{\
+                    'Content-Type': 'application/json'\
+                \}\
+            \})\
+            .then(response => response.json())\
+            .then(data => \{\
+                if (data.status === 'success') \{\
+                    weakElectricMarksData = \{\};\
+                    data.weak_electric_marks.forEach(weMark => \{\
+                        weakElectricMarksData[weMark.id] = weMark;\
+                    \});\
+                    if (callback) \{\
+                        callback();\
+                    \}\
+                \} else \{\
+                    console.error('Failed to load WeakElectric marks:', data.message);\
+                    alert('\uc0\u21152 \u36733 \u24369 \u30005 \u20117 \u26631 \u35760 \u22833 \u36133 \u12290 ');\
+                \}\
+            \})\
+            .catch(err => \{\
+                console.error('Fetch Error:', err);\
+                alert('\uc0\u21152 \u36733 \u24369 \u30005 \u20117 \u26631 \u35760 \u22833 \u36133 \u12290 ');\
+            \});\
+        \}\
+		\
+/**\
+ * \uc0\u23558 \u19968 \u20010 \u21160 \u20316 \u25512 \u20837 \u21160 \u20316 \u26632 \
+ * @param \{object\} action - \uc0\u21160 \u20316 \u23545 \u35937 \
+ */\
+const pushAction = (action) => \{\
+    if (actionStack.length >= MAX_STACK_SIZE) \{\
+        actionStack.shift(); // \uc0\u31227 \u38500 \u26368 \u26087 \u30340 \u21160 \u20316 \
+    \}\
+    actionStack.push(action);\
+    updateUndoButtonState();\
+\};\
+\
+/**\
+ * \uc0\u24377 \u20986 \u19968 \u20010 \u21160 \u20316 \u24182 \u25191 \u34892 \u25764 \u38144 \
+ */\
+const undoLastAction = () => \{\
+    if (actionStack.length === 0) return;\
+\
+    const lastAction = actionStack.pop();\
+    executeUndo(lastAction);\
+    updateUndoButtonState();\
+\};\
+\
+/**\
+ * \uc0\u26356 \u26032 \'93\u25764 \u38144 \'94\u25353 \u38062 \u30340 \u21551 \u29992 \u29366 \u24577 \
+ */\
+const updateUndoButtonState = () => \{\
+    const undoButton = document.getElementById('undoButton');\
+    if (actionStack.length > 0) \{\
+        undoButton.disabled = false;\
+    \} else \{\
+        undoButton.disabled = true;\
+    \}\
+\};\
+\
+/**\
+ * \uc0\u25191 \u34892 \u25764 \u38144 \u25805 \u20316 \
+ * @param \{object\} action - \uc0\u21160 \u20316 \u23545 \u35937 \
+ */\
+const executeUndo = (action) => \{\
+    switch(action.type) \{\
+        case 'add':\
+            // \uc0\u25764 \u38144 \u28155 \u21152 \u26631 \u35760 \u65292 \u21363 \u21024 \u38500 \u26631 \u35760 \
+            deleteMarkWithoutRecording(action.mark.id);\
+            break;\
+        case 'edit':\
+            // \uc0\u25764 \u38144 \u32534 \u36753 \u26631 \u35760 \u65292 \u21363 \u24674 \u22797 \u21040 \u20043 \u21069 \u30340 \u29366 \u24577 \
+            restoreMarkState(action.markId, action.previousState);\
+            break;\
+        case 'delete':\
+            // \uc0\u25764 \u38144 \u21024 \u38500 \u26631 \u35760 \u65292 \u21363 \u37325 \u26032 \u28155 \u21152 \u26631 \u35760 \
+            restoreDeletedMark(action.mark);\
+            break;\
+        case 'move':\
+            // \uc0\u25764 \u38144 \u31227 \u21160 \u26631 \u35760 \u65292 \u21363 \u24674 \u22797 \u21040 \u20043 \u21069 \u30340 \u20301 \u32622 \
+            moveMarkToPosition(action.markId, action.previousPosition);\
+            break;\
+        default:\
+            console.error('Unknown action type:', action.type);\
+    \}\
+\};\
+\
+/**\
+ * \uc0\u21024 \u38500 \u26631 \u35760 \u32780 \u19981 \u35760 \u24405 \u21160 \u20316 \u65288 \u29992 \u20110 \u25764 \u38144 \u25805 \u20316 \u20013 \u30340 \u22238 \u36864 \u65289 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ */\
+const deleteMarkWithoutRecording = (markId) => \{\
+    // \uc0\u20351 \u29992 \u24050 \u26377 \u30340  deleteMark \u20989 \u25968 \u65292 \u20294 \u19981 \u35760 \u24405 \u21160 \u20316 \
+    fetch(`/api/delete_mark/$\{markId\}?force=true`, \{\
+        method: 'DELETE',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \}\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Delete Mark Without Recording Response:', data);\
+        if (data.status === 'success') \{\
+            const markElement = document.getElementById(`mark-$\{markId\}`);\
+            if (markElement) \{\
+                const labelElement = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+                let color;\
+                let markType;\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    color = markElement.style.borderColor.toLowerCase();\
+                    markType = 'WeakElectric';\
+                \} else \{\
+                    color = markElement.style.backgroundColor.toLowerCase();\
+                    markType = 'AP';\
+                \}\
+\
+                markElement.remove();\
+                if (labelElement) \{\
+                    labelElement.remove();\
+                \}\
+                const bindingLabel = document.querySelector(`.binding-label[data-mark-id="$\{markId\}"]`);\
+                if (bindingLabel) \{\
+                    bindingLabel.remove();\
+                \}\
+\
+                if (!markElement.classList.contains('weak-electric-mark')) \{\
+                    if (color) \{\
+                        updateMarkCount(color, -1);\
+                    \}\
+                \}\
+\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    const index = weakElectricUsedColors.indexOf(color);\
+                    if (index > -1) \{\
+                        weakElectricUsedColors.splice(index, 1);\
+                    \}\
+                    // \uc0\u23545 \u20110 WeakElectric\u26631 \u35760 \u65292 \u30452 \u25509 \u37325 \u26032 \u28210 \u26579 \u27719 \u24635 \
+                    renderMarkSummary();\
+                    loadWeakElectricData(() => \{\
+                        if (apBindingLabelsVisible) \{\
+                            removeApBindingLabels();\
+                            loadApBindingLabels();\
+                        \}\
+                    \});\
+                \}\
+\
+                console.log(`Mark $\{markId\} deleted without recording.`);\
+            \}\
+        \} else \{\
+            console.error('Delete mark without recording failed:', data.message);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+    \});\
+\};\
+\
+/**\
+ * \uc0\u24674 \u22797 \u26631 \u35760 \u30340 \u20043 \u21069 \u29366 \u24577 \u65288 \u25764 \u38144 \u32534 \u36753 \u65289 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ * @param \{object\} previousState - \uc0\u20043 \u21069 \u30340 \u29366 \u24577 \u23545 \u35937 \
+ */\
+const restoreMarkState = (markId, previousState) => \{\
+    fetch(`/edit_mark/$\{markId\}`, \{\
+        method: 'POST',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \},\
+        body: JSON.stringify(\{ \
+            label: previousState.label, \
+            color: previousState.color, \
+            weak_electric_id: previousState.weak_electric_id \
+        \})\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Restore Mark State Response:', data);\
+        if (data.status === 'success') \{\
+            const markElement = document.getElementById(`mark-$\{markId\}`);\
+            if (markElement) \{\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    markElement.style.borderColor = previousState.color;\
+                    markElement.style.color = previousState.color;\
+                \} else \{\
+                    markElement.style.backgroundColor = previousState.color;\
+                \}\
+\
+                markElement.setAttribute('data-weak-electric-id', previousState.weak_electric_id || '');\
+\
+                const currentSize = getCurrentSize();\
+                const settings = sizeSettings[currentSize];\
+\
+                const labelDiv = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+                if (labelDiv) \{\
+                    labelDiv.textContent = previousState.label.trim(); // \uc0\u20351 \u29992  trim() \u21435 \u38500 \u31354 \u26684 \
+                    labelDiv.style.fontSize = settings.labelFontSize;\
+                \} else if (previousState.label) \{\
+                    const newLabelDiv = document.createElement('div');\
+                    newLabelDiv.classList.add('label');\
+                    newLabelDiv.style.top = `calc($\{markElement.style.top\} + 1px)`;\
+                    newLabelDiv.style.left = markElement.style.left;\
+                    newLabelDiv.style.fontSize = settings.labelFontSize;\
+                    newLabelDiv.textContent = previousState.label.trim(); // \uc0\u20351 \u29992  trim() \u21435 \u38500 \u31354 \u26684 \
+                    newLabelDiv.setAttribute('data-mark-id', markId); // \uc0\u28155 \u21152 \u20851 \u32852 \u23646 \u24615 \
+                    panzoomElement.appendChild(newLabelDiv);\
+                \}\
+\
+                if (!markElement.classList.contains('weak-electric-mark')) \{\
+                    // \uc0\u26356 \u26032 \u32479 \u35745 \u35745 \u25968 \
+                    const currentColor = previousState.color.toLowerCase();\
+                    updateMarkCountWithoutRenderMarkSummary(previousState.color.toLowerCase(), 1);\
+                \}\
+\
+                // \uc0\u37325 \u26032 \u28210 \u26579 \u32479 \u35745 \u34920 \
+                renderMarkSummary();\
+\
+                // \uc0\u22914 \u26524 \u26159  WeakElectric\u65292 \u37325 \u26032 \u21152 \u36733 \u32465 \u23450 \u20851 \u31995 \
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    loadWeakElectricData(() => \{\
+                        if (apBindingLabelsVisible) \{\
+                            removeApBindingLabels();\
+                            loadApBindingLabels();\
+                        \}\
+                    \});\
+                \} else \{\
+				    // \uc0\u23545 \u20110 AP\u65292 \u26356 \u26032 \u32465 \u23450 \u26631 \u31614 \
+					loadApBindingLabels();\
+				\}	\
+\
+                console.log(`Mark $\{markId\} state restored successfully.`);\
+            \}\
+        \} else \{\
+            console.error('Restore mark state failed:', data.message);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+    \});\
+\};\
+\
+/**\
+ * \uc0\u24674 \u22797 \u34987 \u21024 \u38500 \u30340 \u26631 \u35760 \u65288 \u25764 \u38144 \u21024 \u38500 \u65289 \
+ * @param \{object\} mark - \uc0\u34987 \u21024 \u38500 \u30340 \u26631 \u35760 \u23545 \u35937 \
+ */\
+const restoreDeletedMark = (mark) => \{\
+    fetch(`/add_mark/\{\{ map.id \}\}`, \{\
+        method: 'POST',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \},\
+        body: JSON.stringify(\{ \
+            x: mark.x, \
+            y: mark.y, \
+            color: mark.color, \
+            label: mark.label.trim(), // \uc0\u20351 \u29992  trim() \u21435 \u38500 \u31354 \u26684 \
+            type: mark.type, \
+            weak_electric_id: mark.weak_electric_id !== null ? mark.weak_electric_id : null  \
+        \})\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Restore Deleted Mark Response:', data);\
+        if (data.status === 'success' && data.mark && data.mark.id) \{\
+            const restoredMark = createMarkElement(data.mark);\
+            panzoomElement.appendChild(restoredMark);\
+            bindMarkEvents(restoredMark);\
+            \
+            if (apBindingLabelsVisible) \{\
+                updateBindingLabelForMark(restoredMark);\
+            \}\
+\
+            if (data.mark.type !== 'WeakElectric') \{\
+                updateMarkCount(data.mark.color.toLowerCase(), 1);\
+            \}\
+\
+            if (data.mark.type === 'WeakElectric') \{\
+                renderMarkSummary();\
+                loadWeakElectricData(() => \{\
+                    if (apBindingLabelsVisible) \{\
+                        removeApBindingLabels();\
+                        loadApBindingLabels();\
+                    \}\
+                \});\
+            \} else \{\
+			    // \uc0\u23545 \u20110 AP\u65292 \u26356 \u26032 \u32465 \u23450 \u26631 \u31614 \
+				loadApBindingLabels();\
+			\}\
+\
+            console.log(`Mark $\{data.mark.id\} restored successfully.`);\
+        \} else \{\
+            console.error('Restore deleted mark failed:', data.message);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+    \});\
+\};\
+\
+/**\
+ * \uc0\u23558 \u26631 \u35760 \u31227 \u21160 \u21040 \u25351 \u23450 \u20301 \u32622 \u65288 \u25764 \u38144 \u31227 \u21160 \u65289 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ * @param \{object\} position - \uc0\u20301 \u32622 \u23545 \u35937  \{ x, y \}\
+ */\
+const moveMarkToPosition = (markId, position) => \{\
+    fetch(`/api/update_mark_position/$\{markId\}`, \{\
+        method: 'POST',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \},\
+        body: JSON.stringify(\{ x: position.x, y: position.y \})\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Move Mark To Position Response:', data);\
+        if (data.status === 'success') \{\
+            const markElement = document.getElementById(`mark-$\{markId\}`);\
+            if (markElement) \{\
+                markElement.style.left = `$\{position.x\}%`;\
+                markElement.style.top = `$\{position.y\}%`;\
+\
+                const label = document.querySelector(`.label[data-mark-id="$\{markId\}"]`);\
+                if (label) \{\
+                    label.style.left = `$\{position.x\}%`;\
+                    label.style.top = `calc($\{position.y\}% + 1px)`;\
+                \}\
+\
+                const bindingLabel = document.querySelector(`.binding-label[data-mark-id="$\{markId\}"]`);\
+                if (bindingLabel) \{\
+                    bindingLabel.style.left = markElement.style.left;\
+                    bindingLabel.style.top = markElement.style.top;\
+                \}\
+\
+                console.log(`Mark $\{markId\} moved to x: $\{position.x\}, y: $\{position.y\} successfully.`);\
+            \}\
+        \} else \{\
+            console.error('Move mark to position failed:', data.message);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+    \});\
+\};\
+\
+document.addEventListener('keydown', (e) => \{\
+    // \uc0\u26816 \u27979 \u26159 \u21542 \u25353 \u19979 \u20102  Ctrl + Z \u25110  Command + Z\
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;\
+    const modifierKey = isMac ? e.metaKey : e.ctrlKey;\
+\
+    if (modifierKey && e.key.toLowerCase() === 'z' && !e.shiftKey && !e.altKey) \{\
+        const target = e.target;\
+        const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;\
+\
+        if (!isInput) \{\
+            e.preventDefault(); // \uc0\u38459 \u27490 \u40664 \u35748 \u30340 \u27983 \u35272 \u22120 \u25764 \u38144 \u34892 \u20026 \
+            undoLastAction();\
+        \}\
+        // \uc0\u22914 \u26524 \u22312 \u36755 \u20837 \u26694 \u25110 \u21487 \u32534 \u36753 \u20869 \u23481 \u20013 \u65292 \u20801 \u35768 \u27983 \u35272 \u22120 \u25191 \u34892 \u40664 \u35748 \u30340 \u25764 \u38144 \u25805 \u20316 \
+    \}\
+\});	\
+\
+const cachePdfOnClient = (pdfBlob, fileName) => \{\
+    // \uc0\u30830 \u20445  projectId\u12289 mapId\u12289 mapName\u12289 mapFloor \u24050 \u23450 \u20041 \
+    if (!projectId || !mapId || !mapName || !mapFloor) \{\
+        console.error('\uc0\u39033 \u30446 \u25110 \u22270 \u32440 \u20449 \u24687 \u26410 \u23450 \u20041 :', \{ projectId, mapId, mapName, mapFloor \});\
+        alert('\uc0\u32531 \u23384  PDF \u26102 \u21457 \u29983 \u38169 \u35823 \u65306 \u39033 \u30446 \u25110 \u22270 \u32440 \u20449 \u24687 \u32570 \u22833 \u12290 ');\
+        return;\
+    \}\
+\
+    // \uc0\u30830 \u20445  pdfBlob \u26159 \u19968 \u20010  Blob \u23545 \u35937 \
+    if (!(pdfBlob instanceof Blob)) \{\
+        console.error('pdfBlob \uc0\u19981 \u26159 \u19968 \u20010  Blob \u23545 \u35937 :', pdfBlob);\
+        alert('\uc0\u32531 \u23384  PDF \u26102 \u21457 \u29983 \u38169 \u35823 \u65306 PDF \u25968 \u25454 \u26080 \u25928 \u12290 ');\
+        return;\
+    \}\
+\
+    const data = \{\
+        id: `$\{projectId\}_$\{mapId\}`, // \uc0\u21807 \u19968 \u26631 \u35782 \u31526 \
+        projectId: projectId,\
+        projectName: projectName,\
+        mapId: mapId,\
+        mapName: mapName,\
+        mapFloor: mapFloor,\
+        pdfBlob: pdfBlob\
+    \};\
+\
+    savePdfToIndexedDB(data).then(() => \{\
+        alert('PDF \uc0\u24050 \u25104 \u21151 \u32531 \u23384 \u21040 \u27983 \u35272 \u22120 \u65292 \u22914 \u26524 \u28165 \u38500 \u32531 \u23384 \u21017 \u20250 \u28165 \u31354 \u35813 \u35760 \u24405 ');\
+    \}).catch(error => \{\
+        console.error('Error saving PDF to IndexedDB:', error);\
+        alert('\uc0\u32531 \u23384  PDF \u26102 \u21457 \u29983 \u38169 \u35823 \u12290 ');\
+    \});\
+\};\
+\
+function savePdfToIndexedDB(data) \{\
+    return new Promise((resolve, reject) => \{\
+        const request = indexedDB.open('pdfCacheDB', 2); // \uc0\u32479 \u19968 \u20351 \u29992 \u29256 \u26412  2\
+        request.onupgradeneeded = function(event) \{\
+            const db = event.target.result;\
+            console.log('IndexedDB \uc0\u21319 \u32423 \u21040 \u29256 \u26412 ', db.version);\
+\
+            let store;\
+            if (!db.objectStoreNames.contains('pdfFiles')) \{\
+                console.log('\uc0\u21019 \u24314 \u23545 \u35937 \u23384 \u20648 : pdfFiles');\
+                store = db.createObjectStore('pdfFiles', \{ keyPath: 'id' \});\
+            \} else \{\
+                console.log('\uc0\u23545 \u35937 \u23384 \u20648  pdfFiles \u24050 \u23384 \u22312 ');\
+                store = request.transaction.objectStore('pdfFiles');\
+            \}\
+\
+            if (!store.indexNames.contains('projectIdIndex')) \{\
+                console.log('\uc0\u21019 \u24314 \u32034 \u24341 : projectIdIndex');\
+                store.createIndex('projectIdIndex', 'projectId', \{ unique: false \});\
+            \} else \{\
+                console.log('\uc0\u32034 \u24341  projectIdIndex \u24050 \u23384 \u22312 ');\
+            \}\
+        \};\
+        request.onsuccess = function(event) \{\
+            const db = event.target.result;\
+            const transaction = db.transaction(['pdfFiles'], 'readwrite');\
+            const store = transaction.objectStore('pdfFiles');\
+            const putRequest = store.put(data);\
+            putRequest.onsuccess = function() \{\
+                console.log('PDF \uc0\u25104 \u21151 \u23384 \u20648 \u21040  IndexedDB:', data.id);\
+                resolve();\
+            \};\
+            putRequest.onerror = function(event) \{\
+                console.error('\uc0\u23384 \u20648  PDF \u26102 \u21457 \u29983 \u38169 \u35823 :', event.target.error);\
+                reject(event.target.error);\
+            \};\
+        \};\
+        request.onerror = function(event) \{\
+            console.error('\uc0\u25171 \u24320  IndexedDB \u26102 \u21457 \u29983 \u38169 \u35823 :', event.target.error);\
+            reject(event.target.error);\
+        \};\
+    \});\
+\}\
+\
+\
+\
+        // \uc0\u32465 \u23450 \'93\u24555 \u36895 \u26631 \u31614 \'94\u22797 \u36873 \u26694 \u30340 change\u20107 \u20214 \
+        quickAddAutoLabelCheckbox.addEventListener('change', function() \{\
+            if (this.checked) \{\
+                // \uc0\u28165 \u31354 \u24182 \u31105 \u29992 \u26631 \u31614 \u36755 \u20837 \u26694 \
+                quickAddMarkLabelInput.value = '';\
+                quickAddMarkLabelInput.disabled = true;\
+            \} else \{\
+                // \uc0\u21551 \u29992 \u26631 \u31614 \u36755 \u20837 \u26694 \
+                quickAddMarkLabelInput.disabled = false;\
+            \}\
+        \});\
+\
+        // \uc0\u23450 \u20041 \u20989 \u25968 \u26684 \u24335 \u21270 \u24403 \u21069 \u26102 \u38388 \
+        const getFormattedCurrentTime = () => \{\
+            const now = new Date();\
+            const year = now.getFullYear();\
+            const month = String(now.getMonth() + 1).padStart(2, '0');\
+            const day = String(now.getDate()).padStart(2, '0');\
+            const hours = String(now.getHours()).padStart(2, '0');\
+            const minutes = String(now.getMinutes()).padStart(2, '0');\
+            const seconds = String(now.getSeconds()).padStart(2, '0');\
+            return `$\{year\}\uc0\u24180 $\{month\}\u26376 $\{day\}\u26085  $\{hours\}\u26102 \u65306 $\{minutes\}\u20998 \u65306 $\{seconds\}\u31186 `;\
+        \};\
+\
+        const signatureButtonsDiv = document.getElementById('signature-buttons');\
+        if (signatureButtonsDiv) \{\
+            signatureButtonsDiv.addEventListener('click', (event) => \{\
+                const target = event.target;\
+                const targetId = target.id;\
+\
+                if (targetId === 'useSignatureButton') \{\
+                    // \uc0\u22788 \u29702 \'93\u20351 \u29992 \u32626 \u21517 \'94\u25353 \u38062 \u28857 \u20987 \
+                    signatureFormContainer.style.display = 'block';\
+                    // \uc0\u35774 \u32622 signatureEnabled\u20026 true\
+                    signatureEnabled = true;\
+\
+                    // \uc0\u26367 \u25442 \u25353 \u38062 \u20026 \'93\u21462 \u28040 \u32626 \u21517 \'94\u21644 \'93\u20445 \u23384 \u32626 \u21517 \'94\
+                    signatureButtonsDiv.innerHTML = `\
+                        <button id="cancelSignatureButton" class="btn btn-secondary">\uc0\u21462 \u28040 \u32626 \u21517 </button>\
+                        <button id="saveSignatureButton" class="btn btn-success">\uc0\u20445 \u23384 \u32626 \u21517 </button>\
+                    `;\
+\
+                    // \uc0\u35774 \u32622 \u32472 \u21046 \u26102 \u38388 \
+                    drawingTimeInput.value = getFormattedCurrentTime();\
+\
+                \} else if (targetId === 'saveSignatureButton') \{\
+                    // \uc0\u22788 \u29702 \'93\u20445 \u23384 \u32626 \u21517 \'94\u25353 \u38062 \u28857 \u20987 \
+                    const drawerName = drawerNameInput.value.trim();\
+                    if (!drawerName) \{\
+                        alert('\uc0\u32472 \u21046 \u20154 \u19981 \u33021 \u20026 \u31354 \u12290 ');\
+                        return;\
+                    \}\
+\
+                    // \uc0\u20934 \u22791 \u25968 \u25454 \
+                    const data = \{ drawer_name: drawerName \};\
+\
+                    // \uc0\u21457 \u36865 \u20445 \u23384 \u32626 \u21517 \u30340 POST\u35831 \u27714 \
+                    fetch(`/api/save_signature/\{\{ map.id \}\}`, \{\
+                        method: 'POST',\
+                        headers: \{\
+                            'Content-Type': 'application/json',\
+                            'X-CSRFToken': csrfToken\
+                        \},\
+                        body: JSON.stringify(data)\
+                    \})\
+                    .then(response => response.json())\
+                    .then(data => \{\
+                        if (data.status === 'success') \{\
+                            // \uc0\u26356 \u26032 \u32472 \u21046 \u26102 \u38388 \u26174 \u31034 \
+                            drawingTimeInput.value = data.drawing_time;\
+\
+                            alert('\uc0\u32626 \u21517 \u24050 \u20445 \u23384 \u12290 ');\
+\
+                            // \uc0\u37325 \u26032 \u21152 \u36733 \u39029 \u38754 \u20197 \u26174 \u31034 \u26368 \u26032 \u30340 \u32626 \u21517 \u20449 \u24687 \
+                            location.reload();\
+                        \} else \{\
+                            alert('\uc0\u20445 \u23384 \u32626 \u21517 \u22833 \u36133 : ' + data.message);\
+                        \}\
+                    \})\
+                    .catch(err => \{\
+                        console.error('Fetch Error:', err);\
+                        alert('\uc0\u20445 \u23384 \u32626 \u21517 \u26102 \u21457 \u29983 \u38169 \u35823 \u12290 ');\
+                    \});\
+\
+                \} else if (targetId === 'cancelSignatureButton') \{\
+                    // \uc0\u22788 \u29702 \'93\u21462 \u28040 \u32626 \u21517 \'94\u25353 \u38062 \u28857 \u20987 \
+                    // **\uc0\u20248 \u21270 \u65306 \u31227 \u38500 \u30830 \u35748 \u24377 \u31383 \u65292 \u30452 \u25509 \u28165 \u38500 \u32626 \u21517 \u20449 \u24687 **\
+\
+                    // \uc0\u28165 \u31354 \u34920 \u21333 \
+                    drawerNameInput.value = '';\
+                    drawingTimeInput.value = '';\
+\
+                    // \uc0\u38544 \u34255 \u34920 \u21333 \
+                    signatureFormContainer.style.display = 'none';\
+                    // \uc0\u35774 \u32622 signatureEnabled\u20026 false\
+                    signatureEnabled = false;\
+\
+                    // \uc0\u26367 \u25442 \u25353 \u38062 \u20026 \'93\u20351 \u29992 \u32626 \u21517 \'94\
+                    signatureButtonsDiv.innerHTML = `\
+                        <button id="useSignatureButton" class="btn btn-primary">\uc0\u20351 \u29992 \u32626 \u21517 </button>\
+                    `;\
+                \}\
+            \});\
+        \}\
+\
+        /**\
+         * \uc0\u22635 \u20805 \u22270 \u32440 \u21517 /\u27004 \u23618 \u19979 \u25289 \u33756 \u21333 \
+         * @param \{HTMLElement\} selectElement - \uc0\u31532 \u19968 \u20010 \u19979 \u25289 \u33756 \u21333 \u20803 \u32032 \
+         */\
+        const populateMapFloorSelect = (selectElement) => \{\
+            selectElement.innerHTML = ''; // \uc0\u31227 \u38500 \u20043 \u21069 \u30340 \u36873 \u39033 \
+\
+            const grouped = \{\};\
+\
+            Object.values(weakElectricMarksData).forEach(weMark => \{\
+                const key = `$\{weMark.map_floor\}`;\
+                if (!grouped[key]) grouped[key] = [];\
+                grouped[key].push(weMark);\
+            \});\
+\
+            Object.keys(grouped).sort().forEach(key => \{\
+                const option = document.createElement('option');\
+                option.value = key; // \uc0\u26684 \u24335 \u20026  "MapName/Floor"\
+                option.textContent = key;\
+                selectElement.appendChild(option);\
+            \});\
+\
+            // \uc0\u30830 \u20445 \u24403 \u21069 \u22270 \u32440 /\u27004 \u23618 \u23384 \u22312 \u20110 \u19979 \u25289 \u33756 \u21333 \u20013 \
+            const currentMapFloorKey = `$\{mapFloor\}`;\
+            if (!grouped.hasOwnProperty(currentMapFloorKey)) \{\
+                const option = document.createElement('option');\
+                option.value = currentMapFloorKey;\
+                option.textContent = currentMapFloorKey;\
+                selectElement.appendChild(option);\
+            \}\
+        \};\
+\
+        /**\
+         * \uc0\u22635 \u20805 \u24369 \u30005 \u20117 \u19979 \u25289 \u33756 \u21333 \
+         * @param \{HTMLElement\} selectElement - \uc0\u31532 \u20108 \u20010 \u19979 \u25289 \u33756 \u21333 \u20803 \u32032 \
+         * @param \{string\} mapFloorKey - \uc0\u36873 \u20013 \u30340 \u22270 \u32440 \u21517 /\u27004 \u23618 \u38190 \u20540 \
+         */\
+        const populateWeakElectricSelect = (selectElement, mapFloorKey) => \{\
+            if (!mapFloorKey) \{\
+                selectElement.innerHTML = '<option value="">\uc0\u19981 \u32465 \u23450 </option>';\
+                selectElement.disabled = true;\
+                return;\
+            \}\
+\
+            const weakElectricMarks = Object.values(weakElectricMarksData).filter(weMark => weMark.map_floor === mapFloorKey);\
+\
+            if (weakElectricMarks.length === 0) \{\
+                selectElement.innerHTML = '<option value="">\uc0\u19981 \u32465 \u23450 </option>';\
+            \} else \{\
+                selectElement.innerHTML = '<option value="">\uc0\u19981 \u32465 \u23450 </option>';\
+                weakElectricMarks.forEach(weMark => \{\
+                    const option = document.createElement('option');\
+                    option.value = weMark.id;\
+                    option.textContent = `$\{colorLabelMap[weMark.color]\} <$\{weak_electric_definitions[weMark.color]\}>`;\
+                    selectElement.appendChild(option);\
+                \});\
+            \}\
+\
+            // \uc0\u21551 \u29992 \u24369 \u30005 \u20117 \u36873 \u25321 \u19979 \u25289 \u33756 \u21333 \
+            selectElement.disabled = false;\
+        \};\
+\
+        // **\uc0\u26032 \u22686 \u20195 \u30721 \u65306 \u26681 \u25454 \u31614 \u21517 \u34920 \u21333 \u30340 \u21021 \u22987 \u26174 \u31034 \u29366 \u24577 \u35774 \u32622 signatureEnabled**\
+        const isSignatureVisible = window.getComputedStyle(signatureFormContainer).display !== 'none';\
+        if (isSignatureVisible) \{\
+            signatureEnabled = true;\
+        \}\
+\
+        // \uc0\u24341 \u20837 \u22320 \u22270 \u21517 \u31216 \u21644 \u27004 \u23618 \u21040 JavaScript\
+        const projectName = "\{\{ map.project.name \}\}";\
+        const projectId = "\{\{ map.project.id \}\}";\
+        const mapFloor = "\{\{ map.floor \}\}";\
+        const mapName = "\{\{ map.name \}\}"; // \uc0\u28155 \u21152 \u22320 \u22270 \u21517 \u31216 \
+        const mapId = \{\{ map.id \}\};\
+\
+        const sizeSettings = \{\
+            large: \{\
+                ap: \{ width: '16px', height: '16px' \},\
+                weakElectric: \{ width: '20px', height: '30px' \},\
+                labelFontSize: '12px'\
+            \},\
+            medium: \{\
+                ap: \{ width: '12px', height: '12px' \},\
+                weakElectric: \{ width: '18px', height: '26px' \},\
+                labelFontSize: '9px'\
+            \},\
+            small: \{\
+                ap: \{ width: '9px', height: '9px' \},\
+                weakElectric: \{ width: '14px', height: '22px' \},\
+                labelFontSize: '5px'\
+            \}\
+        \};\
+\
+        const apSizeDropdown = document.getElementById('apSizeDropdown');\
+        const dropdownItems = document.querySelectorAll('.dropdown-item');\
+\
+        const apDefinitions = \{\{ ap_definitions | tojson | safe \}\};\
+        const weak_electric_definitions = \{\{ weak_electric_definitions | tojson | safe \}\};\
+\
+        const colorLabelMap = \{\
+            'red': '\uc0\u32418 \u33394 ',\
+            'blue': '\uc0\u34013 \u33394 ',\
+            'green': '\uc0\u32511 \u33394 ',\
+            'yellow': '\uc0\u40644 \u33394 ',\
+            'purple': '\uc0\u32043 \u33394 ',\
+            'orange': '\uc0\u27225 \u33394 ',\
+            'black': '\uc0\u40657 \u33394 '\
+        \};\
+\
+        const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'black'];\
+\
+        const markCounts = \{\{ mark_counts | tojson | safe \}\};\
+\
+        const weakElectricUsedColors = \{\{ weak_electric_used_colors | tojson | safe \}\};\
+\
+        /**\
+         * \uc0\u33719 \u21462 \u24403 \u21069 \u23610 \u23544 \u35774 \u32622 \
+         * @returns \{string\} - 'large' | 'medium' | 'small'\
+         */\
+        const getCurrentSize = () => \{\
+            const sizeText = apSizeDropdown.textContent;\
+            if (sizeText.includes('\uc0\u22823 ')) return 'large';\
+            if (sizeText.includes('\uc0\u23567 ')) return 'small';\
+            return 'medium';\
+        \};\
+\
+        /**\
+         * \uc0\u35745 \u31639 \u32553 \u25918 \u21518 \u30340 \u23485 \u24230 \u21644 \u39640 \u24230 \u65292 \u20445 \u25345 \u21407 \u22987 \u38271 \u23485 \u27604 \
+         * @param \{number\} originalWidth - \uc0\u21407 \u22987 \u23485 \u24230 \u65288 mm\u65289 \
+         * @param \{number\} originalHeight - \uc0\u21407 \u22987 \u39640 \u24230 \u65288 mm\u65289 \
+         * @param \{number\} maxWidth - \uc0\u26368 \u22823 \u23485 \u24230 \u65288 mm\u65289 \
+         * @param \{number\} maxHeight - \uc0\u26368 \u22823 \u39640 \u24230 \u65288 mm\u65289 \
+         * @returns \{object\} - \uc0\u32553 \u25918 \u21518 \u30340 \u23485 \u24230 \u21644 \u39640 \u24230 \
+         */\
+        const getScaledDimensions = (originalWidth, originalHeight, maxWidth, maxHeight) => \{\
+            const widthRatio = maxWidth / originalWidth;\
+            const heightRatio = maxHeight / originalHeight;\
+            const scale = Math.min(widthRatio, heightRatio);\
+            return \{\
+                width: originalWidth * scale,\
+                height: originalHeight * scale\
+            \};\
+        \};\
+\
+        /**\
+         * \uc0\u21019 \u24314 \u26631 \u35760 \u20803 \u32032 \
+         * @param \{object\} markData - \uc0\u26631 \u35760 \u25968 \u25454 \
+         * @returns \{HTMLElement\} - \uc0\u26631 \u35760 \u20803 \u32032 \
+         */\
+        const createMarkElement = (markData) => \{\
+            const \{ id, x, y, color, type, label, weak_electric_id \} = markData;\
+            const mark = document.createElement('div');\
+            mark.classList.add('mark');\
+            mark.id = `mark-$\{id\}`;\
+            mark.style.top = `$\{y\}%`;\
+            mark.style.left = `$\{x\}%`;\
+            mark.setAttribute('data-mark-id', id);\
+            mark.setAttribute('data-x', x);\
+            mark.setAttribute('data-y', y);\
+            mark.setAttribute('data-type', type);\
+            mark.setAttribute('data-weak-electric-id', weak_electric_id || '');\
+            mark.setAttribute('draggable', 'false');\
+            mark.setAttribute('title', `$\{label\}$\{weak_electric_id ? ` (\uc0\u32465 \u23450 \u21040  WeakElectric ID: $\{weak_electric_id\})` : ''\}`);\
+\
+            if (type === 'WeakElectric') \{\
+                mark.classList.add('weak-electric-mark');\
+                mark.style.borderColor = color;\
+                mark.style.color = color;\
+                mark.textContent = 'IDF';\
+                mark.setAttribute('data-has-bindings', 'false');\
+            \} else \{\
+                mark.style.backgroundColor = color;\
+                mark.style.borderRadius = '50%';\
+            \}\
+\
+            // \uc0\u26681 \u25454 \u24403 \u21069 \u23610 \u23544 \u35774 \u32622 \u23485 \u39640 \u21644 \u23383 \u20307 \u22823 \u23567 \
+            const currentSize = getCurrentSize();\
+            const settings = sizeSettings[currentSize];\
+            if (type === 'WeakElectric') \{\
+                mark.style.width = settings.weakElectric.width;\
+                mark.style.height = settings.weakElectric.height;\
+                mark.style.fontSize = settings.labelFontSize; // \uc0\u35774 \u32622  "IDF" \u23383 \u20307 \u22823 \u23567 \
+            \} else \{\
+                mark.style.width = settings.ap.width;\
+                mark.style.height = settings.ap.height;\
+            \}\
+\
+            // \uc0\u21019 \u24314 \u26631 \u31614 \
+            if (label) \{\
+                const labelDiv = document.createElement('div');\
+                labelDiv.classList.add('label');\
+                labelDiv.style.top = `calc($\{y\}% + 1px)`;\
+                labelDiv.style.left = `$\{x\}%`;\
+                labelDiv.style.fontSize = settings.labelFontSize;\
+                labelDiv.textContent = label;\
+                labelDiv.setAttribute('data-mark-id', id); // \uc0\u28155 \u21152 \u20851 \u32852 \u23646 \u24615 \
+                panzoomElement.appendChild(labelDiv);\
+            \}\
+\
+            return mark;\
+        \};\
+\
+        /**\
+         * \uc0\u28210 \u26579 \u26631 \u35760 \u27719 \u24635 \u34920 \u21333 \u65288 \u21512 \u24182 AP\u21644 \u24369 \u30005 \u20117 \u65289 \
+         */\
+        /**\
+         * \uc0\u28210 \u26579 \u26631 \u35760 \u27719 \u24635 \u34920 \u21333 \u65288 \u21512 \u24182 AP\u21644 \u24369 \u30005 \u20117 \u65289 \
+         */\
+        const renderMarkSummary = () => \{\
+            const table = document.getElementById('mark-summary-table');\
+            const tbody = table.querySelector('tbody');\
+            const legendRow = tbody.rows[0]; // \uc0\u22270 \u31034 \u34892 \
+            const descriptionRow = tbody.rows[1]; // \uc0\u35828 \u26126 \u34892 \
+            const countRow = tbody.rows[2]; // \uc0\u25968 \u37327 \u34892 \
+\
+            // \uc0\u28165 \u38500 \u20043 \u21069 \u30340 \u21160 \u24577 \u21015 \u65288 \u19981 \u28165 \u38500 \u31532 \u19968 \u21015 \u65289 \
+            while (legendRow.cells.length > 1) \{\
+                legendRow.deleteCell(1);\
+            \}\
+            while (descriptionRow.cells.length > 1) \{\
+                descriptionRow.deleteCell(1);\
+            \}\
+            while (countRow.cells.length > 1) \{\
+                countRow.deleteCell(1);\
+            \}\
+        \
+            // \uc0\u33719 \u21462 \u25152 \u26377  WeakElectric \u26631 \u35760 \u30340 \u32465 \u23450  AP \u25968 \u37327 \
+            fetch(`/api/get_weak_electric_bindings/$\{mapId\}`)\
+                .then(response => response.json())\
+                .then(data => \{\
+                    if (data.status === 'success') \{\
+                        const bindingCounts = data.counts; // \{ color: total_bound_aps, ... \}\
+\
+                        // \uc0\u25910 \u38598  AP \u31867 \u22411 \u21644  WeakElectric \u31867 \u22411 \u65292 \u32479 \u35745 \u25968 \u37327 \
+                        const apTypes = Object.keys(apDefinitions);\
+                        const weTypes = Object.keys(weak_electric_definitions);\
+\
+                        // \uc0\u32479 \u35745  AP \u25968 \u37327 \u65288 \u20165 \u24403 \u21069 \u22270 \u32440 \u65289 \
+                        const apTypesCounts = \{\}; // color: count\
+                        const apMarks = document.querySelectorAll('.mark:not(.weak-electric-mark)');\
+                        apMarks.forEach(mark => \{\
+                            const color = mark.style.backgroundColor.toLowerCase();\
+                            if (color && apDefinitions[color]) \{\
+                                apTypesCounts[color] = (apTypesCounts[color] || 0) + 1;\
+                            \}\
+                        \});\
+\
+                        // \uc0\u32479 \u35745  WeakElectric \u26631 \u35760 \u30340 \u25968 \u37327 \u65288 \u20165 \u24403 \u21069 \u22270 \u32440 \u65289 \
+                        const weMarkCounts = \{\}; // color: count\
+                        const weMarks = document.querySelectorAll('.mark.weak-electric-mark');\
+                        weMarks.forEach(weMark => \{\
+                            const color = weMark.style.borderColor.toLowerCase();\
+                            if (color && weak_electric_definitions[color]) \{\
+                                weMarkCounts[color] = (weMarkCounts[color] || 0) + 1;\
+                            \}\
+                        \});\
+\
+                        // \uc0\u36807 \u28388 \u25481  AP \u31867 \u22411 \u20013 \u25968 \u37327 \u20026  0 \u30340 \u39068 \u33394 \
+                        const filteredAPTypes = apTypes.filter(color => apTypesCounts[color] > 0);\
+                        // \uc0\u36807 \u28388 \u25481  WeakElectric \u31867 \u22411 \u20013 \u26631 \u35760 \u25968 \u37327 \u20026  0 \u30340 \u39068 \u33394 \u65292 \u20294 \u19981 \u26681 \u25454 \u32465 \u23450  AP \u25968 \u37327 \u36827 \u34892 \u36807 \u28388 \
+                        const filteredWeTypes = weTypes.filter(color => weMarkCounts[color] > 0);\
+\
+                        // **\uc0\u35745 \u31639 \u24635 \u30340 \u21160 \u24577 \u21015 \u25968 **\
+                        const totalColumns = filteredAPTypes.length + filteredWeTypes.length;\
+\
+                        // **\uc0\u21160 \u24577 \u35843 \u25972 \u34920 \u26684 \u23383 \u20307 \u22823 \u23567 **\
+                        const baseFontSize = 14; // \uc0\u22522 \u30784 \u23383 \u20307 \u22823 \u23567 \
+                        let adjustedFontSize = baseFontSize;\
+                        if (totalColumns > 7) \{\
+                            // \uc0\u27599 \u36229 \u36807  7 \u21015 \u65292 \u23383 \u20307 \u20943 \u23567  1px\u65292 \u26368 \u23567 \u19981 \u20302 \u20110  8px\
+                            adjustedFontSize = Math.max(baseFontSize - (totalColumns - 7), 8);\
+                        \}\
+                        table.style.fontSize = adjustedFontSize + 'px';\
+\
+                        // **\uc0\u21160 \u24577 \u35774 \u32622 \u34920 \u26684 \u26631 \u39064 \u30340  colspan \u23646 \u24615 **\
+                        const headerRow = table.querySelector('thead tr');\
+                        const headerTh = headerRow.cells[1]; // \uc0\u31532 \u20108 \u20010  th\
+                        headerTh.setAttribute('colspan', totalColumns);\
+\
+                        // \uc0\u22914 \u26524 \u27809 \u26377 \u20219 \u20309  AP \u25110  WeakElectric\u65292 \u26174 \u31034 \u25552 \u31034 \
+                        if (filteredAPTypes.length === 0 && filteredWeTypes.length === 0) \{\
+                            // \uc0\u22312 \u25968 \u37327 \u34892 \u20013 \u26174 \u31034 \u25552 \u31034 \u65292 \u24182 \u21512 \u24182 \u21160 \u24577 \u21015 \u30340 \u21333 \u20803 \u26684 \
+                            countRow.innerHTML = '<td>\uc0\u25968 \u37327 </td><td colspan="' + totalColumns + '">\u24403 \u21069 \u22270 \u32440 \u27809 \u26377  AP \u25110 \u24369 \u30005 \u20117 \u26631 \u35760 \u12290 </td>';\
+                            return;\
+                        \}\
+\
+                        // \uc0\u29983 \u25104 \u21160 \u24577 \u21015 \
+                        filteredAPTypes.forEach(color => \{\
+                            // \uc0\u22270 \u31034 \u21015 \
+                            const legendCell = document.createElement('td');\
+                            const span = document.createElement('span');\
+                            span.classList.add('color-circle');\
+                            span.style.backgroundColor = color;\
+                            legendCell.appendChild(span);\
+                            legendRow.appendChild(legendCell);\
+\
+                            // \uc0\u35828 \u26126 \u21015 \
+                            const descCell = document.createElement('td');\
+                            descCell.textContent = apDefinitions[color] || '\uc0\u26410 \u23450 \u20041 ';\
+                            descriptionRow.appendChild(descCell);\
+\
+                            // \uc0\u25968 \u37327 \u21015 \
+                            const countCell = document.createElement('td');\
+                            countCell.textContent = apTypesCounts[color] || 0;\
+                            countRow.appendChild(countCell);\
+                        \});\
+\
+                        filteredWeTypes.forEach(color => \{\
+                            // \uc0\u22270 \u31034 \u21015 \
+                            const legendCell = document.createElement('td');\
+                            const span = document.createElement('span');\
+                            span.classList.add('color-rectangle');\
+                            span.style.borderColor = color;\
+                            span.style.backgroundColor = 'transparent'; // \uc0\u35753 \u30697 \u24418 \u20026 \u31354 \u24515 \
+                            span.style.color = color; // \uc0\u35774 \u32622 \u25991 \u23383 \u39068 \u33394 \
+                            span.textContent = 'IDF';\
+                            legendCell.appendChild(span);\
+                            legendRow.appendChild(legendCell);\
+\
+                            // \uc0\u35828 \u26126 \u21015 \
+                            const descCell = document.createElement('td');\
+                            descCell.textContent = weak_electric_definitions[color] || '\uc0\u26410 \u23450 \u20041 ';\
+                            descriptionRow.appendChild(descCell);\
+\
+                            // \uc0\u25968 \u37327 \u21015 \
+                            const countCell = document.createElement('td');\
+                            const totalBoundAPs = bindingCounts[color] || 0; // \uc0\u20351 \u29992  API \u25552 \u20379 \u30340 \u32465 \u23450  AP \u25968 \u37327 \
+                            countCell.textContent = `\uc0\u32465 \u23450  AP: $\{totalBoundAPs\}`;\
+                            countRow.appendChild(countCell);\
+                        \});\
+\
+                    \} else \{\
+                        console.error('Failed to fetch weak electric bindings:', data.message);\
+                        alert('\uc0\u33719 \u21462 \u24369 \u30005 \u20117 \u32465 \u23450 \u20449 \u24687 \u22833 \u36133 \u12290 ');\
+                    \}\
+                \})\
+                .catch(err => \{\
+                    console.error('Fetch Error:', err);\
+                    alert('\uc0\u33719 \u21462 \u24369 \u30005 \u20117 \u32465 \u23450 \u20449 \u24687 \u22833 \u36133 \u12290 ');\
+                \});\
+        \};\
+\
+        /**\
+         * \uc0\u26681 \u25454 \u39068 \u33394 \u33719 \u21462 \u32465 \u23450  AP \u24635 \u25968 \
+         * @param \{Array\} weakElectricMarks - \uc0\u24369 \u30005 \u20117 \u26631 \u35760 \u25968 \u32452 \
+         * @param \{string\} color - \uc0\u24369 \u30005 \u20117 \u39068 \u33394 \
+         * @returns \{number\} - \uc0\u32465 \u23450  AP \u24635 \u25968 \
+         */\
+        const getTotalBoundAPsForColor = (weakElectricMarks, color) => \{\
+            let total = 0;\
+            weakElectricMarks.forEach(mark => \{\
+                if (mark.color.toLowerCase() === color.toLowerCase()) \{\
+                    total += mark.total_bound_aps;\
+                \}\
+            \});\
+            return total;\
+        \};\
+\
+        /**\
+         * \uc0\u26356 \u26032 \u26631 \u35760 \u35745 \u25968 \u24182 \u37325 \u26032 \u28210 \u26579 \u27719 \u24635 \
+         * @param \{string\} color - \uc0\u26631 \u35760 \u39068 \u33394 \
+         * @param \{number\} delta - \uc0\u22686 \u37327 \u65288 \u27491 \u25968 \u25110 \u36127 \u25968 \u65289 \
+         */\
+        const updateMarkCount = (color, delta) => \{\
+            if (markCounts[color] !== undefined) \{\
+                markCounts[color] += delta;\
+                if (markCounts[color] < 0) markCounts[color] = 0;\
+            \} else if (delta > 0) \{\
+                markCounts[color] = delta;\
+            \}\
+            renderMarkSummary();\
+        \};\
+        const updateMarkCountWithoutRenderMarkSummary = (color, delta) => \{\
+            if (markCounts[color] !== undefined) \{\
+                markCounts[color] += delta;\
+                if (markCounts[color] < 0) markCounts[color] = 0;\
+            \} else if (delta > 0) \{\
+                markCounts[color] = delta;\
+            \}\
+        \};\
+\
+        /**\
+         * \uc0\u24212 \u29992 \u35268 \u26684 \u35774 \u32622 \
+         * @param \{string\} size - \uc0\u35268 \u26684 \u22823 \u23567 \u65288 large, medium, small\u65289 \
+         */\
+        const applySizeSettings = (size) => \{\
+            const settings = sizeSettings[size];\
+            if (!settings) return;\
+\
+            // \uc0\u26356 \u26032 \u19979 \u25289 \u25353 \u38062 \u30340 \u25991 \u26412 \
+            const sizeText = size === 'large' ? '\uc0\u22823 ' : size === 'medium' ? '\u20013 ' : '\u23567 ';\
+            apSizeDropdown.textContent = `AP\uc0\u28857 \u20301 \u35268 \u26684 \u65306 $\{sizeText\}`;\
+\
+            // \uc0\u33719 \u21462 \u25152 \u26377 \u26631 \u35760 \u21644 \u26631 \u31614 \
+            const marks = document.querySelectorAll('.mark');\
+            const labels = document.querySelectorAll('.label');\
+\
+            // \uc0\u26356 \u26032 \u26631 \u35760 \u23610 \u23544 \
+            marks.forEach(mark => \{\
+                if (mark.classList.contains('weak-electric-mark')) \{\
+                    mark.style.width = settings.weakElectric.width;\
+                    mark.style.height = settings.weakElectric.height;\
+                    mark.style.fontSize = settings.labelFontSize; // \uc0\u30830 \u20445  "IDF" \u23383 \u20307 \u22823 \u23567 \
+                \} else \{\
+                    mark.style.width = settings.ap.width;\
+                    mark.style.height = settings.ap.height;\
+                \}\
+            \});\
+\
+            // \uc0\u26356 \u26032 \u26631 \u31614 \u23383 \u20307 \u22823 \u23567 \
+            labels.forEach(label => \{\
+                label.style.fontSize = settings.labelFontSize;\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u20445 \u23384 \u35268 \u26684 \u35774 \u32622 \u21040 \u26381 \u21153 \u22120 \
+         * @param \{string\} size - \uc0\u35268 \u26684 \u22823 \u23567 \
+         */\
+        const saveSizeSetting = (size) => \{\
+            fetch(`/api/set_map_size/\{\{ map.id \}\}`, \{\
+                method: 'POST',\
+                headers: \{\
+                    'Content-Type': 'application/json',\
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+                \},\
+                body: JSON.stringify(\{ size \})\
+            \})\
+            .then(response => response.json())\
+            .then(data => \{\
+                if (data.status === 'success') \{\
+                    console.log(`AP\uc0\u28857 \u20301 \u35268 \u26684 \u35774 \u32622 \u20026  $\{size\} \u24182 \u24050 \u20445 \u23384 .`);\
+                \} else \{\
+                    alert('\uc0\u20445 \u23384 \u35268 \u26684 \u35774 \u32622 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                    console.error('Save size failed:', data);\
+                \}\
+            \})\
+            .catch(err => \{\
+                console.error('Fetch Error:', err);\
+                alert('\uc0\u20445 \u23384 \u35268 \u26684 \u35774 \u32622 \u22833 \u36133 : ' + err);\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u39068 \u33394 \u19979 \u25289 \u33756 \u21333 \
+         */\
+        const initializeColorDropdowns = () => \{\
+            const addMarkForm = document.getElementById('addMarkForm');\
+            const addMarkColorSelect = document.getElementById('mark_color');\
+            const addAsWeakElectricCheckbox = document.getElementById('addAsWeakElectric');\
+            const addBindContainer = document.getElementById('add_bindToWeakElectricContainer');\
+            const addBindMapFloorSelect = document.getElementById('add_select_map_floor');\
+            const addBindWeakElectricSelect = document.getElementById('add_select_weak_electric');\
+\
+            const editMarkForm = document.getElementById('editMarkForm');\
+            const editMarkColorSelect = document.getElementById('edit_mark_color');\
+            const editBindContainer = document.getElementById('edit_bindToWeakElectricContainer');\
+            const editBindMapFloorSelect = document.getElementById('edit_select_map_floor');\
+            const editBindWeakElectricSelect = document.getElementById('edit_select_weak_electric');\
+\
+            const quickAddConfigForm = document.getElementById('quickAddConfigForm');\
+            const quickAddMarkColorSelect = document.getElementById('quickAdd_mark_color');\
+            const quickAddSelectMapFloorSelect = document.getElementById('quickAdd_select_map_floor');\
+            const quickAddSelectWeakElectricSelect = document.getElementById('quickAdd_select_weak_electric');\
+\
+            // \uc0\u32465 \u23450 \u28155 \u21152 \u26631 \u35760 \u27169 \u24577 \u26694 \u30340 \u22797 \u36873 \u26694 \u20107 \u20214 \
+            addAsWeakElectricCheckbox.addEventListener('change', function() \{\
+                if (this.checked) \{\
+                    // \uc0\u28155 \u21152 \u20026 \u24369 \u30005 \u20117 \u65292 \u38544 \u34255 \u32465 \u23450 WeakElectric\u30340 \u19979 \u25289 \u33756 \u21333 \
+                    populateColorOptions(addMarkColorSelect, weak_electric_definitions, null, true);\
+                    add_bindToWeakElectricContainer.classList.add('d-none');\
+                \} else \{\
+                    // \uc0\u28155 \u21152 \u20026 AP\u65292 \u26174 \u31034 \u32465 \u23450 WeakElectric\u30340 \u19979 \u25289 \u33756 \u21333 \
+                    populateColorOptions(addMarkColorSelect, apDefinitions, null, false);\
+                    add_bindToWeakElectricContainer.classList.remove('d-none');\
+                    populateMapFloorSelect(addBindMapFloorSelect); // \uc0\u22635 \u20805 \u22270 \u32440 \u21517 /\u27004 \u23618 \
+                    addBindWeakElectricSelect.disabled = true; // \uc0\u21021 \u22987 \u31105 \u29992 \u24369 \u30005 \u20117 \u36873 \u25321 \
+                    // \uc0\u35774 \u32622 \u22270 \u32440 /\u27004 \u23618 \u19979 \u25289 \u33756 \u21333 \u20026 \u24403 \u21069 \u27004 \u23618 \
+                    const currentMapFloorKey = `$\{mapFloor\}`;\
+                    addBindMapFloorSelect.value = currentMapFloorKey;\
+                    // \uc0\u26681 \u25454 \u24403 \u21069 \u27004 \u23618 \u21152 \u36733 \u24369 \u30005 \u20117 \u36873 \u39033 \
+                    populateWeakElectricSelect(addBindWeakElectricSelect, currentMapFloorKey);\
+                    // \uc0\u23558 \u24369 \u30005 \u20117 \u19979 \u25289 \u33756 \u21333 \u40664 \u35748 \u36873 \u25321 \u20026 \'93\u19981 \u32465 \u23450 \'94\
+                    addBindWeakElectricSelect.value = '';\
+                    // \uc0\u30830 \u20445 \u24369 \u30005 \u20117 \u19979 \u25289 \u33756 \u21333 \u34987 \u21551 \u29992 \
+                    addBindWeakElectricSelect.disabled = false;\
+                \}\
+            \});\
+\
+            // \uc0\u24403 \u27169 \u24577 \u26694 \u25171 \u24320 \u26102 \u65292 \u26681 \u25454 \u22797 \u36873 \u26694 \u29366 \u24577 \u35774 \u32622 \u39068 \u33394 \u21015 \u34920 \u21644 \u32465 \u23450 \u36873 \u39033 \u26174 \u31034 \
+            $('#addMarkModal').on('show.bs.modal', () => \{\
+                const isWeakElectric = addAsWeakElectricCheckbox.checked;\
+                if (isWeakElectric) \{\
+                    populateColorOptions(addMarkColorSelect, weak_electric_definitions, null, true);\
+                    addBindContainer.style.display = 'none';\
+                \} else \{\
+                    populateColorOptions(addMarkColorSelect, apDefinitions, null, false);\
+                    addBindContainer.style.display = 'block';\
+                    populateMapFloorSelect(addBindMapFloorSelect); // \uc0\u22635 \u20805 \u22270 \u32440 \u21517 /\u27004 \u23618 \
+\
+                    // \uc0\u40664 \u35748 \u36873 \u25321 \u24403 \u21069 \u22270 \u32440 /\u27004 \u23618 \
+                    const currentMapFloorKey = `$\{mapFloor\}`; // \uc0\u20351 \u29992 \u24050 \u22312 JavaScript\u20013 \u23450 \u20041 \u30340 mapFloor\
+                    addBindMapFloorSelect.value = currentMapFloorKey;\
+                    populateWeakElectricSelect(addBindWeakElectricSelect, currentMapFloorKey);\
+                \}\
+\
+                // \uc0\u28165 \u31354 \u26631 \u31614 \
+                document.getElementById('mark_label').value = '';\
+\
+                // \uc0\u28165 \u31354 \u32465 \u23450 WeakElectric\u19979 \u25289 \u33756 \u21333 \
+                // addBindWeakElectricSelect.value = '';\
+            \});\
+\
+            // \uc0\u32465 \u23450 \u22270 \u32440 \u21517 /\u27004 \u23618 \u36873 \u25321 \u20107 \u20214 \u20197 \u22635 \u20805 \u24369 \u30005 \u20117 \u19979 \u25289 \u33756 \u21333 \
+            addBindMapFloorSelect.addEventListener('change', function() \{\
+                const selectedMapFloor = this.value;\
+                populateWeakElectricSelect(addBindWeakElectricSelect, selectedMapFloor);\
+            \});\
+        \
+            // \uc0\u32465 \u23450 \u22270 \u32440 \u21517 /\u27004 \u23618 \u36873 \u25321 \u20107 \u20214 \u20197 \u22635 \u20805 WeakElectric\u19979 \u25289 \u33756 \u21333 \u65288 Edit Modal\u65289 \
+            editBindMapFloorSelect.addEventListener('change', function() \{\
+                const selectedMapFloor = this.value;\
+                populateWeakElectricSelect(editBindWeakElectricSelect, selectedMapFloor);\
+            \});\
+\
+            // \uc0\u32534 \u36753 \u26631 \u35760 \u27169 \u24577 \u26694 \u19981 \u20801 \u35768 \u26356 \u25913 \u31867 \u22411 \u65292 \u22240 \u27492 \u39068 \u33394 \u21015 \u34920 \u26681 \u25454 \u24403 \u21069 \u26631 \u35760 \u31867 \u22411 \u36827 \u34892 \u22635 \u20805 \
+            $('#editMarkModal').on('show.bs.modal', () => \{\
+                const markId = document.getElementById('edit_mark_id').value;\
+                const markElement = document.getElementById(`mark-$\{markId\}`);\
+                const markType = markElement.getAttribute('data-type');\
+                const markColor = markElement.style.backgroundColor || markElement.style.borderColor;\
+                let normalizedColor = markColor;\
+\
+                // \uc0\u26631 \u20934 \u21270 \u39068 \u33394 \u21517 \u31216 \
+                const tempDiv = document.createElement('div');\
+                tempDiv.style.color = markColor;\
+                document.body.appendChild(tempDiv);\
+                normalizedColor = getComputedStyle(tempDiv).color;\
+                document.body.removeChild(tempDiv);\
+                normalizedColor = colorNameFromRGB(normalizedColor).toLowerCase();\
+\
+                if (markType === 'WeakElectric') \{\
+                    populateColorOptions(editMarkColorSelect, weak_electric_definitions, normalizedColor, true);\
+                    showApBindingsButton.style.display = 'inline-block';\
+                    edit_bindToWeakElectricContainer.classList.add('d-none');\
+                \} else \{\
+                    populateColorOptions(editMarkColorSelect, apDefinitions, normalizedColor, false);\
+                    edit_bindToWeakElectricContainer.classList.remove('d-none');\
+                    let weakElectricId = markElement.getAttribute('data-weak-electric-id');\
+                    weakElectricId = weakElectricId && weakElectricId.trim() !== '' ? parseInt(weakElectricId) : null;\
+                    loadWeakElectricOptions('edit', weakElectricId); // \uc0\u20256 \u36882  weakElectricId\u65292 \u21487 \u33021 \u20026  null\
+                \}\
+\
+            \});\
+\
+            // \uc0\u24403 \u24555 \u25463 \u28155 \u21152 \u37197 \u32622 \u27169 \u24577 \u26694 \u25171 \u24320 \u26102 \u65292 \u21021 \u22987 \u21270 \u39068 \u33394 \u21644 \u24369 \u30005 \u20117 \u36873 \u39033 \
+            $('#quickAddConfigModal').on('show.bs.modal', () => \{\
+                populateColorOptions(quickAddMarkColorSelect, apDefinitions, null, false);\
+                populateMapFloorSelect(quickAddSelectMapFloorSelect); // \uc0\u22635 \u20805 \u22270 \u32440 \u21517 /\u27004 \u23618 \
+                \
+                // \uc0\u40664 \u35748 \u36873 \u25321 \u24403 \u21069 \u27004 \u23618 \
+                const currentMapFloorKey = `$\{mapFloor\}`; \
+                quickAddSelectMapFloorSelect.value = currentMapFloorKey;\
+                populateWeakElectricSelect(quickAddSelectWeakElectricSelect, currentMapFloorKey);\
+                \
+                if (quickAddAutoLabelCheckbox.checked) \{\
+                    quickAddMarkLabelInput.value = '';\
+                    quickAddMarkLabelInput.disabled = true;\
+                \} else \{\
+                    quickAddMarkLabelInput.disabled = false;\
+                \}\
+            \});\
+\
+            // \uc0\u32465 \u23450 \u22270 \u32440 \u21517 /\u27004 \u23618 \u36873 \u25321 \u20107 \u20214 \u20197 \u22635 \u20805 \u24369 \u30005 \u20117 \u19979 \u25289 \u33756 \u21333 \
+            quickAddSelectMapFloorSelect.addEventListener('change', function() \{\
+                const selectedMapFloor = this.value;\
+                populateWeakElectricSelect(quickAddSelectWeakElectricSelect, selectedMapFloor);\
+            \});\
+        \};\
+        /**\
+         * \uc0\u26681 \u25454 \u23450 \u20041 \u22635 \u20805 \u39068 \u33394 \u36873 \u39033 \
+         * @param \{HTMLElement\} selectElement - \uc0\u19979 \u25289 \u36873 \u25321 \u26694 \u20803 \u32032 \
+         * @param \{object\} definitions - \uc0\u23450 \u20041 \u23545 \u35937 \
+         * @param \{string\} [selectedColor] - \uc0\u39044 \u36873 \u39068 \u33394 \
+         * @param \{boolean\} isWeakElectric - \uc0\u26159 \u21542 \u20026  WeakElectric \u26631 \u35760 \
+         */\
+        const populateColorOptions = (selectElement, definitions, selectedColor = null, isWeakElectric = false) => \{\
+            selectElement.innerHTML = '';\
+            // \uc0\u31227 \u38500 \u21069 \u31471 \u23545 WeakElectric\u39068 \u33394 \u30340 \u38480 \u21046 \u65292 \u26174 \u31034 \u25152 \u26377 \u24050 \u23450 \u20041 \u30340 \u39068 \u33394 \
+            const availableColors = Object.keys(definitions);\
+\
+            availableColors.forEach(color => \{\
+                const option = document.createElement('option');\
+                option.value = color;\
+                if (isWeakElectric) \{\
+                    // \uc0\u26174 \u31034 \u26684 \u24335 \u20026 \'93\u39068 \u33394  <\u24369 \u30005 \u20117 \u23450 \u20041 >\'94\
+                    option.textContent = `$\{colorLabelMap[color]\} <$\{weak_electric_definitions[color]\}>`;\
+                \} else \{\
+                    option.textContent = `$\{colorLabelMap[color]\} <$\{apDefinitions[color]\}>`;\
+                \}\
+                if (selectedColor && color.toLowerCase() === selectedColor.toLowerCase()) \{\
+                    option.selected = true;\
+                \}\
+                selectElement.appendChild(option);\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u20174 RGB\u39068 \u33394 \u20540 \u33719 \u21462 \u39068 \u33394 \u21517 \u31216 \
+         * @param \{string\} rgb - RGB\uc0\u39068 \u33394 \u20540 \u65292 \u22914  "rgb(255, 0, 0)"\
+         * @returns \{string\} - \uc0\u39068 \u33394 \u21517 \u31216 \u65292 \u22914  "red"\
+         */\
+        const colorNameFromRGB = (rgb) => \{\
+            const colorMap = \{\
+                'rgb(255, 0, 0)': 'red',\
+                'rgb(0, 0, 255)': 'blue',\
+                'rgb(0, 128, 0)': 'green',\
+                'rgb(255, 255, 0)': 'yellow',\
+                'rgb(128, 0, 128)': 'purple',\
+                'rgb(255, 165, 0)': 'orange',\
+                'rgb(0, 0, 0)': 'black'\
+            \};\
+            return colorMap[rgb] || '';\
+        \};\
+\
+        /**\
+         * \uc0\u32465 \u23450 \u19979 \u25289 \u33756 \u21333 \u39033 \u28857 \u20987 \u20107 \u20214 \
+         */\
+        const bindDropdownEvents = () => \{\
+            dropdownItems.forEach(item => \{\
+                item.addEventListener('click', (e) => \{\
+                    e.preventDefault();\
+                    const selectedSize = item.getAttribute('data-size');\
+                    applySizeSettings(selectedSize);\
+                    saveSizeSetting(selectedSize);\
+                \});\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u24182 \u24212 \u29992 \u24050 \u20445 \u23384 \u30340 \u35268 \u26684 \u35774 \u32622 \
+         */\
+        const initializeSizeSetting = () => \{\
+            fetch(`/api/get_map_size/\{\{ map.id \}\}`, \{\
+                method: 'GET',\
+                headers: \{\
+                    'Content-Type': 'application/json'\
+                \}\
+            \})\
+            .then(response => response.json())\
+            .then(data => \{\
+                if (data.status === 'success' && data.size) \{\
+                    applySizeSettings(data.size);\
+                \} else \{\
+                    applySizeSettings('medium');\
+                \}\
+            \})\
+            .catch(err => \{\
+                console.error('Fetch Error:', err);\
+                applySizeSettings('medium');\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270  Panzoom\
+         */\
+        const initializePanzoom = () => \{\
+            try \{\
+                panzoomInstance = Panzoom(panzoomElement, \{\
+                    maxScale: 10,\
+                    contain: 'outside',\
+                    startScale: 1,\
+                    startX: 0,\
+                    startY: 0,\
+                    filter: (e) => !(e.target.closest('.mark') || e.target.closest('.label'))\
+                \});\
+                console.log('Panzoom initialized successfully.');\
+\
+                // \uc0\u32465 \u23450 \u40736 \u26631 \u28378 \u36718 \u20107 \u20214 \u29992 \u20110 \u32553 \u25918 \
+                panzoomElement.parentElement.addEventListener('wheel', panzoomInstance.zoomWithWheel);\
+\
+                // \uc0\u21491 \u38190 \u25302 \u21160 \u24179 \u31227 \
+                let isPanning = false;\
+                let startX, startY;\
+\
+                panzoomElement.parentElement.addEventListener('mousedown', (e) => \{\
+                    if (e.button === 2) \{ // \uc0\u21491 \u38190 \
+                        isPanning = true;\
+                        startX = e.clientX;\
+                        startY = e.clientY;\
+                        panzoomElement.style.cursor = 'grabbing';\
+                        e.preventDefault();\
+                    \}\
+                \});\
+\
+                document.addEventListener('mousemove', (e) => \{\
+                    if (isPanning && panzoomInstance) \{\
+                        const dx = e.clientX - startX;\
+                        const dy = e.clientY - startY;\
+                        panzoomInstance.panBy(dx, dy);\
+                        startX = e.clientX;\
+                        startY = e.clientY;\
+                    \}\
+                \});\
+\
+                document.addEventListener('mouseup', (e) => \{\
+                    if (isPanning && e.button === 2 && panzoomInstance) \{\
+                        isPanning = false;\
+                        panzoomElement.style.cursor = 'grab';\
+                    \}\
+                \});\
+\
+                // \uc0\u31105 \u29992 \u21491 \u38190 \u33756 \u21333 \
+                panzoomElement.parentElement.addEventListener('contextmenu', (e) => \{\
+                    e.preventDefault();\
+                \});\
+            \} catch (error) \{\
+                console.error('Panzoom initialization failed:', error);\
+            \}\
+        \};\
+\
+ /**\
+ * \uc0\u32465 \u23450 \u20107 \u20214 \u21040 \u26631 \u35760 \
+ * @param \{HTMLElement\} mark - \uc0\u26631 \u35760 \u20803 \u32032 \
+ */\
+const bindMarkEvents = (mark) => \{\
+    if (isMobileDevice()) \{\
+        // \uc0\u31227 \u21160 \u31471 \u36923 \u36753 \
+        let touchStartTime = 0;\
+        let touchTimeout = null;\
+        let touchMoved = false;\
+        const LONG_PRESS_DURATION = 500; // \uc0\u38271 \u25353 \u26102 \u38388 \u38408 \u20540 \u65288 \u27627 \u31186 \u65289 \
+\
+        const onTouchStart = (e) => \{\
+            e.preventDefault();\
+            e.stopPropagation();\
+            touchMoved = false;\
+            touchStartTime = Date.now();\
+            touchTimeout = setTimeout(() => \{\
+                // \uc0\u38271 \u25353 \u26816 \u27979 \u65292 \u25191 \u34892 \u25235 \u21462 \
+                grabMark(mark);\
+            \}, LONG_PRESS_DURATION);\
+        \};\
+\
+        const onTouchMove = (e) => \{\
+            touchMoved = true;\
+            // \uc0\u22914 \u26524 \u22312 \u38271 \u25353 \u26399 \u38388 \u26816 \u27979 \u21040 \u31227 \u21160 \u65292 \u21017 \u21462 \u28040 \u38271 \u25353 \u35745 \u26102 \u22120 \
+            if (touchTimeout) \{\
+                clearTimeout(touchTimeout);\
+                touchTimeout = null;\
+            \}\
+        \};\
+\
+        const onTouchEnd = (e) => \{\
+            e.preventDefault();\
+            e.stopPropagation();\
+            const touchEndTime = Date.now();\
+            const touchDuration = touchEndTime - touchStartTime;\
+\
+            if (touchTimeout) \{\
+                clearTimeout(touchTimeout);\
+                touchTimeout = null;\
+            \}\
+\
+            if (!touchMoved && touchDuration < LONG_PRESS_DURATION) \{\
+                // \uc0\u30701 \u25353 \u65292 \u25191 \u34892 \u32534 \u36753 \u26631 \u35760 \u36923 \u36753 \
+                const markId = mark.dataset.markId;\
+                console.log(`Mark clicked: ID=$\{markId\}`);\
+\
+                fetch(`/api/get_mark/$\{markId\}`, \{\
+                    method: 'GET',\
+                    headers: \{\
+                        'Content-Type': 'application/json'\
+                    \}\
+                \})\
+                .then(response => response.json())\
+                .then(data => \{\
+                    if (data.status === 'success' && data.mark) \{\
+                        const editMarkForm = document.getElementById('editMarkForm');\
+                        editMarkForm.reset();\
+                        document.getElementById('edit_mark_id').value = data.mark.id;\
+                        document.getElementById('edit_mark_label').value = data.mark.label || '';\
+                        document.getElementById('edit_mark_color').value = data.mark.color;\
+\
+                        const bindContainer = document.getElementById('edit_bindToWeakElectricContainer');\
+                        const bindSelect = document.getElementById('edit_select_weak_electric');\
+\
+                        const showApBindingsBtn = document.getElementById('showApBindingsButton');\
+\
+                        if (data.mark.type === 'AP') \{\
+                            bindContainer.style.display = 'block';\
+                            showApBindingsBtn.style.display = 'none';\
+                            loadWeakElectricOptions('edit', data.mark.weak_electric_id);\
+                        \} else \{\
+                            bindContainer.style.display = 'none';\
+                            showApBindingsBtn.style.display = 'inline-block';\
+                        \}\
+\
+                        $('#editMarkModal').modal('show');\
+                    \} else \{\
+                        alert('\uc0\u33719 \u21462 \u26631 \u35760 \u20449 \u24687 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                    \}\
+                \})\
+                .catch(err => \{\
+                    console.error('Fetch Error:', err);\
+                    alert('\uc0\u33719 \u21462 \u26631 \u35760 \u20449 \u24687 \u22833 \u36133 : ' + err);\
+                \});\
+            \}\
+            // \uc0\u22914 \u26524 \u26159 \u38271 \u25353 \u65292 \u24050 \u32463 \u22312  touchstart \u20013 \u22788 \u29702 \u65292 \u26080 \u38656 \u39069 \u22806 \u25805 \u20316 \
+        \};\
+\
+        mark.addEventListener('touchstart', onTouchStart);\
+        mark.addEventListener('touchmove', onTouchMove);\
+        mark.addEventListener('touchend', onTouchEnd);\
+\
+        // \uc0\u38450 \u27490 \u38271 \u25353 \u20986 \u29616 \u19978 \u19979 \u25991 \u33756 \u21333 \u65288 \u20363 \u22914 \u20445 \u23384 \u22270 \u29255 \u12289 \u20998 \u20139 \u31561 \u65289 \
+        mark.addEventListener('contextmenu', (e) => \{\
+            e.preventDefault();\
+        \});\
+\
+    \} else \{\
+        // \uc0\u26700 \u38754 \u31471 \u36923 \u36753 \u20445 \u25345 \u19981 \u21464 \
+        mark.addEventListener('click', (e) => \{\
+           if (e.ctrlKey || e.metaKey) \{\
+                grabMark(mark);\
+                return;\
+            \}\
+            if (e.shiftKey) \{\
+                // Shift + \uc0\u24038 \u38190 \u28857 \u20987 \u65292 \u25191 \u34892 \u24555 \u25463 \u21024 \u38500 \u25110 \u25552 \u31034 \
+                const markId = mark.dataset.markId;\
+                const markType = mark.getAttribute('data-type');\
+                if (markType === 'AP') \{\
+                    // \uc0\u25191 \u34892 \u24555 \u25463 \u21024 \u38500  AP\
+                    quickDeleteAP(markId);\
+                \} else if (markType === 'WeakElectric') \{\
+                    // \uc0\u24377 \u20986 \u25552 \u31034 \
+                    alert('\uc0\u24369 \u30005 \u20117 \u26080 \u27861 \u24555 \u25463 \u21024 \u38500 ');\
+                \}\
+                return; // \uc0\u32467 \u26463 \u22788 \u29702 \u65292 \u36991 \u20813 \u32487 \u32493 \u25191 \u34892 \u19979 \u38754 \u30340 \u20195 \u30721 \
+            \}\
+            // \uc0\u32487 \u32493 \u21407 \u26377 \u30340 \u28857 \u20987 \u22788 \u29702 \u36923 \u36753 \
+            e.preventDefault();\
+            e.stopPropagation();\
+            const markId = mark.dataset.markId;\
+            console.log(`Mark clicked: ID=$\{markId\}`);\
+\
+            fetch(`/api/get_mark/$\{markId\}`, \{\
+                method: 'GET',\
+                headers: \{\
+                    'Content-Type': 'application/json'\
+                \}\
+            \})\
+            .then(response => response.json())\
+            .then(data => \{\
+                if (data.status === 'success' && data.mark) \{\
+                    const editMarkForm = document.getElementById('editMarkForm');\
+                    editMarkForm.reset();\
+                    document.getElementById('edit_mark_id').value = data.mark.id;\
+                    document.getElementById('edit_mark_label').value = data.mark.label || '';\
+                    document.getElementById('edit_mark_color').value = data.mark.color;\
+\
+                    const bindContainer = document.getElementById('edit_bindToWeakElectricContainer');\
+                    const bindSelect = document.getElementById('edit_select_weak_electric');\
+\
+                    const showApBindingsBtn = document.getElementById('showApBindingsButton');\
+\
+                    if (data.mark.type === 'AP') \{\
+                        bindContainer.style.display = 'block';\
+                        showApBindingsBtn.style.display = 'none';\
+                        loadWeakElectricOptions('edit', data.mark.weak_electric_id);\
+                    \} else \{\
+                        bindContainer.style.display = 'none';\
+                        showApBindingsBtn.style.display = 'inline-block';\
+                    \}\
+\
+                    $('#editMarkModal').modal('show');\
+                \} else \{\
+                    alert('\uc0\u33719 \u21462 \u26631 \u35760 \u20449 \u24687 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                \}\
+            \})\
+            .catch(err => \{\
+                console.error('Fetch Error:', err);\
+                alert('\uc0\u33719 \u21462 \u26631 \u35760 \u20449 \u24687 \u22833 \u36133 : ' + err);\
+            \});\
+        \});\
+		\
+        // \uc0\u26032 \u22686 \u30340 \u21491 \u38190 \u28857 \u20987 \u20107 \u20214 \u30417 \u21548 \
+        mark.addEventListener('contextmenu', (e) => \{\
+            e.preventDefault(); // \uc0\u38459 \u27490 \u40664 \u35748 \u30340 \u21491 \u38190 \u33756 \u21333 \
+            if (e.shiftKey) \{\
+                const markId = mark.dataset.markId;\
+                const markType = mark.getAttribute('data-type');\
+                if (markType === 'AP') \{\
+                    if (quickAddConfig) \{\
+                        // \uc0\u25191 \u34892 \u24555 \u25463 \u32534 \u36753 \
+                        quickEditAP(markId);\
+                    \} else \{\
+                        alert('\uc0\u35831 \u20808 \u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u26469 \u36866 \u37197 \u24555 \u25463 \u32534 \u36753 \u12290 ');\
+                    \}\
+                \} else if (markType === 'WeakElectric') \{\
+                    alert('\uc0\u24369 \u30005 \u20117 \u19981 \u25903 \u25345 \u24555 \u25463 \u32534 \u36753 \u12290 ');\
+                \}\
+                return; // \uc0\u32467 \u26463 \u22788 \u29702 \u65292 \u36991 \u20813 \u32487 \u32493 \u25191 \u34892 \u19979 \u38754 \u30340 \u20195 \u30721 \
+            \}\
+            // \uc0\u22914 \u26524 \u38656 \u35201 \u22788 \u29702 \u20854 \u20182 \u21491 \u38190 \u25805 \u20316 \u65292 \u21487 \u20197 \u22312 \u36825 \u37324 \u28155 \u21152 \u20195 \u30721 \
+        \});\
+		\
+    \}\
+\};\
+\
+/**\
+ * \uc0\u26816 \u27979 \u26159 \u21542 \u20026 \u31227 \u21160 \u35774 \u22791 \
+ * @returns \{boolean\} - \uc0\u22914 \u26524 \u26159 \u31227 \u21160 \u35774 \u22791 \u21017 \u36820 \u22238  true\
+ */\
+function isMobileDevice() \{\
+    return /Mobi|Android|iPhone|iPad|iPod|Windows Phone|Opera Mini/i.test(navigator.userAgent);\
+\}\
+\
+/**\
+ * \uc0\u24555 \u25463 \u21024 \u38500  AP \u26631 \u35760 \u21450 \u20854 \u32465 \u23450 \u20851 \u31995 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ */\
+const quickDeleteAP = (markId) => \{\
+    fetch(`/api/delete_mark/$\{markId\}?force=true`, \{\
+        method: 'DELETE',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \}\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Quick Delete AP Response:', data);\
+        if (data.status === 'success') \{\
+            const markElement = document.getElementById(`mark-$\{markId\}`);\
+            if (markElement) \{\
+                const labelElement = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+                let color;\
+                let markType;\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    color = markElement.style.borderColor.toLowerCase();\
+                    markType = 'WeakElectric';\
+                \} else \{\
+                    color = markElement.style.backgroundColor.toLowerCase();\
+                    markType = 'AP';\
+                \}\
+\
+                // \uc0\u35760 \u24405 \u34987 \u21024 \u38500 \u30340 \u26631 \u35760 \u20449 \u24687 \
+                const deletedMark = \{\
+                    id: markId,\
+                    x: parseFloat(markElement.style.left),\
+                    y: parseFloat(markElement.style.top),\
+                    color: markType === 'WeakElectric' ? markElement.style.borderColor : markElement.style.backgroundColor,\
+                    type: markType,\
+                    label: labelElement ? labelElement.textContent : '',\
+                    weak_electric_id: markElement.getAttribute('data-weak-electric-id') ? parseInt(markElement.getAttribute('data-weak-electric-id')) : null\
+                \};\
+\
+                // \uc0\u35760 \u24405 \'93\u21024 \u38500 \'94\u21160 \u20316 \
+                pushAction(\{\
+                    type: 'delete',\
+                    mark: deletedMark\
+                \});\
+\
+                markElement.remove();\
+                if (labelElement) \{\
+                    labelElement.remove();\
+                \}\
+                \
+                // \uc0\u31227 \u38500 \u32465 \u23450 \u26631 \u31614 \
+                const bindingLabel = document.querySelector(`.binding-label[data-mark-id="$\{markId\}"]`);\
+                if (bindingLabel) \{\
+                    bindingLabel.remove();\
+                \}\
+\
+                if (!markElement.classList.contains('weak-electric-mark')) \{\
+                    if (color) \{\
+                        updateMarkCount(color, -1);\
+                    \}\
+                \}\
+\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    const index = weakElectricUsedColors.indexOf(color);\
+                    if (index > -1) \{\
+                        weakElectricUsedColors.splice(index, 1);\
+                    \}\
+                    // \uc0\u23545 \u20110 WeakElectric\u26631 \u35760 \u65292 \u30452 \u25509 \u37325 \u26032 \u28210 \u26579 \u27719 \u24635 \
+                    renderMarkSummary();\
+                    loadWeakElectricData(() => \{\
+                        if (apBindingLabelsVisible) \{\
+                            removeApBindingLabels();\
+                            loadApBindingLabels();\
+                        \}\
+                    \});\
+                \}\
+\
+                $('#editMarkModal').modal('hide');\
+                console.log(`Mark $\{markId\} deleted quickly.`);\
+            \}\
+        \} else \{\
+            alert('\uc0\u24555 \u25463 \u21024 \u38500 AP\u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+            console.error('Quick delete AP failed:', data);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+        alert('\uc0\u24555 \u25463 \u21024 \u38500 AP\u22833 \u36133 : ' + err);\
+    \});\
+\};\
+		\
+/**\
+ * \uc0\u24555 \u25463 \u32534 \u36753  AP \u26631 \u35760 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ */\
+const quickEditAP = (markId) => \{\
+    if (!quickAddConfig) \{\
+        alert('\uc0\u35831 \u20808 \u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u26469 \u36866 \u37197 \u24555 \u25463 \u32534 \u36753 \u12290 ');\
+        return;\
+    \}\
+\
+    const markElement = document.getElementById(`mark-$\{markId\}`);\
+    const markType = markElement.getAttribute('data-type');\
+\
+    if (markType !== 'AP') \{\
+        alert('\uc0\u24369 \u30005 \u20117 \u19981 \u25903 \u25345 \u24555 \u25463 \u32534 \u36753 \u12290 ');\
+        return;\
+    \}\
+\
+    const color = quickAddConfig.color;\
+    let weakElectricId = null;\
+    const selectedMapFloor = quickAddConfig.select_map_floor;\
+    if (selectedMapFloor) \{\
+        weakElectricId = parseInt(quickAddConfig.select_weak_electric) || null;\
+    \}\
+\
+    // \uc0\u20445 \u30041 \u24403 \u21069 \u30340 \u26631 \u31614 \
+    const labelDiv = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+    const label = labelDiv ? labelDiv.textContent : '';\
+\
+    // \uc0\u33719 \u21462 \u21407 \u22987 \u39068 \u33394 \u21644 \u32465 \u23450 \u20449 \u24687 \u65292 \u29992 \u20110 \u25764 \u38144 \
+    const originalColor = markElement.style.backgroundColor.toLowerCase();\
+    const originalWeakElectricId = markElement.getAttribute('data-weak-electric-id') || null;\
+\
+    // \uc0\u35760 \u24405 \u32534 \u36753 \u21069 \u30340 \u29366 \u24577 \
+    const previousState = \{\
+        label: label,\
+        color: originalColor,\
+        weak_electric_id: originalWeakElectricId\
+    \};\
+\
+    // \uc0\u21457 \u36865 \u26356 \u26032 \u35831 \u27714 \
+    fetch(`/edit_mark/$\{markId\}`, \{\
+        method: 'POST',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \},\
+        body: JSON.stringify(\{ label, color, weak_electric_id: weakElectricId \})\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Quick Edit Mark Response:', data);\
+        if (data.status === 'success') \{\
+            // \uc0\u26356 \u26032 \u26631 \u35760 \u30340 \u39068 \u33394 \
+            markElement.style.backgroundColor = color;\
+            // \uc0\u26356 \u26032 \u32465 \u23450 \u24369 \u30005 \u20117 \u30340 \u23646 \u24615 \
+            markElement.setAttribute('data-weak-electric-id', weakElectricId || '');\
+\
+            // \uc0\u26356 \u26032 \u32465 \u23450 \u26631 \u31614 \u65288 \u22914 \u26524 \u26174 \u31034 \u65289 \
+            if (apBindingLabelsVisible) \{\
+                updateBindingLabelForMark(markElement);\
+            \}\
+\
+            // \uc0\u26356 \u26032 \u32479 \u35745 \u35745 \u25968 \
+            if (originalColor && originalColor !== color.toLowerCase()) \{\
+                updateMarkCountWithoutRenderMarkSummary(originalColor, -1);\
+                updateMarkCountWithoutRenderMarkSummary(color.toLowerCase(), 1);\
+            \}\
+            // \uc0\u37325 \u26032 \u28210 \u26579 \u32479 \u35745 \u34920 \
+            renderMarkSummary();\
+\
+            // \uc0\u35760 \u24405 \'93\u32534 \u36753 \'94\u21160 \u20316 \
+            pushAction(\{\
+                type: 'edit',\
+                markId: markId,\
+                previousState: previousState\
+            \});\
+\
+            console.log(`Mark $\{markId\} quick edited successfully.`);\
+        \} else \{\
+            alert('\uc0\u24555 \u25463 \u32534 \u36753 \u26631 \u35760 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+            console.error('Quick Edit mark failed:', data);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+        alert('\uc0\u24555 \u25463 \u32534 \u36753 \u26631 \u35760 \u22833 \u36133 : ' + err);\
+    \});\
+\};\
+\
+        /**\
+         * \uc0\u32465 \u23450 \u25152 \u26377 \u29616 \u26377 \u26631 \u35760 \u20107 \u20214 \
+         */\
+        const bindAllMarks = () => \{\
+            const marks = document.querySelectorAll('.mark');\
+            marks.forEach(mark => bindMarkEvents(mark));\
+        \};\
+\
+        /**\
+         * \uc0\u32465 \u23450 \'93\u36824 \u21407 \u35270 \u35282 \'94\u21644 \'93\u23548 \u20986 PDF\'94\u25353 \u38062 \u20107 \u20214 \
+         */\
+        const bindButtonEvents = () => \{\
+            document.getElementById('configureQuickAddButton').addEventListener('click', () => \{\
+                $('#quickAddConfigModal').modal('show');\
+            \});\
+            document.getElementById('restoreViewButton').addEventListener('click', restoreView);\
+            document.getElementById('exportPdfButton').addEventListener('click', () => \{\
+                const confirmExport = confirm('\uc0\u23548 \u20986 pdf\u20250 \u26681 \u25454 \u24403 \u21069 \u22270 \u32440 \u35270 \u35282 \u36827 \u34892 \u65292 \u35831 \u30830 \u20445 \u24403 \u21069 \u22270 \u32440 \u30340 \u20840 \u37096 \u21306 \u22495 \u37117 \u26174 \u31034 \u22312 \u32534 \u36753 \u21306 \u22495 \u12290 \u20320 \u21487 \u20197 \u36890 \u36807 \u28857 \u20987 \u12304 \u36824 \u21407 \u35270 \u35282 \u12305 \u25353 \u38062 \u23558 \u20840 \u37096 \u22270 \u32440 \u21306 \u22495 \u24555 \u36895 \u36824 \u21407 \u21040 \u32534 \u36753 \u21306 \u22495 \u12290 \\n\\n\u26159 \u21542 \u32487 \u32493 \u23548 \u20986 PDF\u65311 ');\
+                if (confirmExport) \{\
+                    exportMapToPDF();\
+                \} else \{\
+                    console.log('\uc0\u29992 \u25143 \u21462 \u28040 \u20102 \u23548 \u20986 PDF\u25805 \u20316 \u12290 ');\
+                \}\
+            \});\
+			\
+			document.getElementById('cachePdfButton').addEventListener('click', () => \{\
+			\
+  		      if (isSafari()) \{\
+                  // Safari \uc0\u27983 \u35272 \u22120 \u19981 \u25903 \u25345 \u35813 \u21151 \u33021 \u65292 \u25552 \u31034 \u29992 \u25143 \
+                  alert('Safari\uc0\u27983 \u35272 \u22120 \u19981 \u25903 \u25345 \u32531 \u23384  PDF \u21151 \u33021 \u12290 \u35831 \u23581 \u35797 \u20351 \u29992 Chrome\u27983 \u35272 \u22120 \u12290 ');\
+                  return; // \uc0\u38459 \u27490 \u36827 \u19968 \u27493 \u25805 \u20316 \
+                \}\
+			\
+			    const confirmCache = confirm('\uc0\u32531 \u23384  PDF \u20250 \u26681 \u25454 \u24403 \u21069 \u22270 \u32440 \u35270 \u35282 \u36827 \u34892 \u65292 \u35831 \u30830 \u20445 \u24403 \u21069 \u22270 \u32440 \u30340 \u20840 \u37096 \u21306 \u22495 \u37117 \u26174 \u31034 \u22312 \u32534 \u36753 \u21306 \u22495 \u12290 \u20320 \u21487 \u20197 \u36890 \u36807 \u28857 \u20987 \u12304 \u36824 \u21407 \u35270 \u35282 \u12305 \u25353 \u38062 \u23558 \u20840 \u37096 \u22270 \u32440 \u21306 \u22495 \u24555 \u36895 \u36824 \u21407 \u21040 \u32534 \u36753 \u21306 \u22495 \u12290 \\n\\n\u26159 \u21542 \u32487 \u32493 \u32531 \u23384  PDF\u65311 ');\
+				if (confirmCache) \{\
+				    exportMapToPDF('cache');\
+			    \} else \{\
+				    console.log('\uc0\u29992 \u25143 \u21462 \u28040 \u20102 \u32531 \u23384  PDF \u25805 \u20316 \u12290 ');\
+				\}\
+			\});\
+		\
+\
+            document.getElementById('showApBindingsButton').addEventListener('click', () => \{\
+                const markId = document.getElementById('edit_mark_id').value;\
+                showApBindings(markId);\
+            \});\
+\
+            // \uc0\u22788 \u29702 \'93\u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \'94\u34920 \u21333 \u25552 \u20132 \
+            document.getElementById('quickAddConfigForm').addEventListener('submit', (e) => \{\
+                e.preventDefault();\
+\
+                const color = document.getElementById('quickAdd_mark_color').value;\
+                const label = document.getElementById('quickAdd_mark_label').value;\
+                const selectMapFloor = document.getElementById('quickAdd_select_map_floor').value;\
+                const selectWeakElectric = document.getElementById('quickAdd_select_weak_electric').value || null;\
+                const autoLabel = document.getElementById('quickAdd_auto_label').checked;\
+\
+                quickAddConfig = \{\
+                    color: color,\
+                    label: label,\
+                    select_map_floor: selectMapFloor,\
+                    select_weak_electric: selectWeakElectric,\
+                    autoLabel: autoLabel // \uc0\u20445 \u23384 \'93\u24555 \u36895 \u26631 \u31614 \'94\u36873 \u39033 \
+                \};\
+                $('#quickAddConfigModal').modal('hide');\
+                alert('\uc0\u24555 \u25463 \u28155 \u21152 \u37197 \u32622 \u24050 \u20445 \u23384 \u12290 ');\
+            \});\
+        \
+            // \uc0\u22788 \u29702 \'93\u28165 \u38500 \u37197 \u32622 \'94\u25353 \u38062 \u28857 \u20987 \u20107 \u20214 \
+            document.getElementById('clearQuickAddConfigButton').addEventListener('click', () => \{\
+                quickAddConfig = null;\
+                alert('\uc0\u24555 \u25463 \u28155 \u21152 \u37197 \u32622 \u24050 \u28165 \u38500 \u12290 ');\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u36824 \u21407  Panzoom \u29366 \u24577 \
+         */\
+        const restorePanzoomState = () => \{\
+            const savedScale = localStorage.getItem('panzoomScale');\
+            const savedX = localStorage.getItem('panzoomX');\
+            const savedY = localStorage.getItem('panzoomY');\
+            if (savedScale && savedX !== null && savedY !== null && panzoomInstance) \{\
+                panzoomInstance.zoom(parseFloat(savedScale), \{ animate: false \});\
+                panzoomInstance.pan(parseFloat(savedX), parseFloat(savedY), \{ animate: false \});\
+                console.log('Panzoom state restored:', \{\
+                    scale: parseFloat(savedScale),\
+                    x: parseFloat(savedX),\
+                    y: parseFloat(savedY)\
+                \});\
+                // \uc0\u28165 \u38500 \u20445 \u23384 \u30340 \u29366 \u24577 \
+                localStorage.removeItem('panzoomScale');\
+                localStorage.removeItem('panzoomX');\
+                localStorage.removeItem('panzoomY');\
+            \}\
+        \};\
+\
+        /**\
+         * \uc0\u36824 \u21407 \u35270 \u35282 \
+         */\
+        const restoreView = () => \{\
+            if (panzoomInstance) \{\
+                panzoomInstance.reset();\
+                console.log('\uc0\u35270 \u35282 \u24050 \u36824 \u21407 \u21040 \u21021 \u22987 \u29366 \u24577 \u12290 ');\
+            \}\
+        \};\
+\
+        const exportMapToPDF = (action = 'download') => \{\
+            console.log('Export PDF function triggered with action:', action);\
+            const now = new Date();\
+            const formattedDate = now.toISOString().replace(/[:.-]/g, '').slice(0, 15);\
+            const projectName = "\{\{ map.project.name \}\}";\
+            const mapName = "\{\{ map.name \}\}";\
+            const mapFloor = "\{\{ map.floor \}\}";\
+            const fileName = `$\{projectName\}-$\{mapName\}_$\{mapFloor\}-$\{formattedDate\}.pdf`;\
+\
+            const titleElement = document.querySelector('h1');\
+            const markSummary = document.getElementById('mark-summary');\
+            const mapContainer = document.getElementById('map-container');\
+            const signatureFormContainer = document.getElementById('signatureFormContainer'); // \uc0\u33719 \u21462 \u32626 \u21517 \u34920 \u21333 \u20803 \u32032 \
+\
+            const A4_WIDTH = 210;\
+            const A4_HEIGHT = 297;\
+            const MARGIN = 10;\
+            const AVAILABLE_WIDTH = A4_WIDTH - 2 * MARGIN;\
+            const AVAILABLE_HEIGHT = A4_HEIGHT - 2 * MARGIN;\
+\
+            const DPI = 96;\
+            const pxToMm = (px) => px * 25.4 / DPI;\
+\
+            // \uc0\u26816 \u26597 \u31614 \u21517 \u21151 \u33021 \u26159 \u21542 \u24320 \u21551 \
+            const signatureEnabledNow = signatureEnabled; // \uc0\u30830 \u20445 signatureEnabled\u24050 \u27491 \u30830 \u35774 \u32622 \
+\
+            // \uc0\u24320 \u22987 \u29983 \u25104 PDF\u20869 \u23481 \
+            html2canvas(titleElement, \{ scale: 3.0, useCORS: true \}).then(canvasTitle => \{\
+                const titleImage = canvasTitle.toDataURL('image/jpeg');\
+                const titleWidthMm = pxToMm(canvasTitle.width);\
+                const titleHeightMm = pxToMm(canvasTitle.height);\
+                const titleDimensions = getScaledDimensions(titleWidthMm, titleHeightMm, AVAILABLE_WIDTH, AVAILABLE_HEIGHT);\
+\
+                html2canvas(markSummary, \{ scale: 3.0, useCORS: true \}).then(canvasSummary => \{\
+                    const summaryImage = canvasSummary.toDataURL('image/jpeg');\
+                    const summaryWidthMm = pxToMm(canvasSummary.width);\
+                    const summaryHeightMm = pxToMm(canvasSummary.height);\
+                    const summaryDimensions = getScaledDimensions(summaryWidthMm, summaryHeightMm, AVAILABLE_WIDTH, AVAILABLE_HEIGHT);\
+\
+                    html2canvas(mapContainer, \{ scale: 3.0, useCORS: true \}).then(canvasMap => \{\
+\
+                        // **\uc0\u22312 \u36825 \u37324 \u36827 \u34892 \u38271 \u23485 \u27604 \u30340 \u26816 \u26597 \u21644 \u35843 \u25972 **\
+                        const aspectRatio = canvasMap.height / canvasMap.width;\
+\
+                        if (aspectRatio > 1.15) \{\
+                            // \uc0\u38656 \u35201 \u35843 \u25972 \
+                            const desiredAspectRatio = 1.15;\
+                            const desiredWidth = Math.round(canvasMap.height / desiredAspectRatio);\
+                            const extraWidth = desiredWidth - canvasMap.width;\
+\
+                            // \uc0\u21019 \u24314 \u26032 \u30340  Canvas\
+                            const newCanvas = document.createElement('canvas');\
+                            newCanvas.width = desiredWidth;\
+                            newCanvas.height = canvasMap.height;\
+\
+                            const ctx = newCanvas.getContext('2d');\
+\
+                            // \uc0\u22635 \u20805 \u30333 \u33394 \u32972 \u26223 \
+                            ctx.fillStyle = '#FFFFFF';\
+                            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);\
+\
+                            // \uc0\u23558 \u21407 \u22987 \u22270 \u20687 \u23621 \u20013 \u32472 \u21046 \u21040 \u26032  Canvas\
+                            const offsetX = Math.round(extraWidth / 2);\
+                            ctx.drawImage(canvasMap, offsetX, 0);\
+\
+                            // \uc0\u29992 \u26032 \u30340  Canvas \u26367 \u25442 \u21407 \u26469 \u30340  canvasMap\
+                            canvasMap = newCanvas;\
+                        \}\
+\
+                        const mapImage = canvasMap.toDataURL('image/jpeg');\
+                        const mapWidthMm = pxToMm(canvasMap.width);\
+                        const mapHeightMm = pxToMm(canvasMap.height);\
+                        const mapDimensions = getScaledDimensions(mapWidthMm, mapHeightMm, AVAILABLE_WIDTH, AVAILABLE_HEIGHT);\
+\
+                        // \uc0\u23450 \u20041 \u19968 \u20010 \u20989 \u25968 \u65292 \u29992 \u20110 \u29983 \u25104 PDF\
+                        const generatePDF = (signatureImageData, signatureDimensions) => \{\
+                            const \{ jsPDF \} = window.jspdf;\
+                            const pdf = new jsPDF('p', 'mm', 'a4');\
+\
+                            let yPosition = MARGIN;\
+\
+                            // \uc0\u28155 \u21152 \u26631 \u39064 \
+                            pdf.addImage(titleImage, 'PNG', MARGIN, yPosition, titleDimensions.width, titleDimensions.height);\
+                            yPosition += titleDimensions.height + 5;\
+\
+                            // \uc0\u28155 \u21152 \u26631 \u35760 \u27719 \u24635 \u34920 \u21333 \
+                            if (yPosition + summaryDimensions.height + 5 > A4_HEIGHT - MARGIN) \{\
+                                pdf.addPage();\
+                                yPosition = MARGIN;\
+                            \}\
+                            pdf.addImage(summaryImage, 'PNG', MARGIN, yPosition, summaryDimensions.width, summaryDimensions.height);\
+                            yPosition += summaryDimensions.height + 5;\
+\
+                            // \uc0\u35745 \u31639 \u21097 \u20313 \u39640 \u24230 \u65292 \u32771 \u34385 \u31614 \u21517 \u34920 \u21333 \u30340 \u39640 \u24230 \
+                            let remainingHeight = A4_HEIGHT - MARGIN - yPosition;\
+                            if (signatureEnabledNow && signatureDimensions) \{\
+                                remainingHeight -= signatureDimensions.height + 5; // \uc0\u30041 \u20986 \u31614 \u21517 \u34920 \u21333 \u30340 \u31354 \u38388 \u21644 \u38388 \u36317 \
+                            \}\
+\
+                            // \uc0\u22914 \u26524 \u22270 \u32440 \u22270 \u29255 \u39640 \u24230 \u36229 \u36807 \u21097 \u20313 \u31354 \u38388 \u65292 \u38656 \u35201 \u28155 \u21152 \u26032 \u39029 \u38754 \
+                            if (mapDimensions.height > remainingHeight) \{\
+                                pdf.addPage();\
+                                yPosition = MARGIN;\
+                                remainingHeight = A4_HEIGHT - MARGIN - yPosition;\
+                                if (signatureEnabledNow && signatureDimensions) \{\
+                                    remainingHeight -= signatureDimensions.height + 5;\
+                                \}\
+                            \}\
+\
+                            pdf.addImage(mapImage, 'PNG', MARGIN, yPosition, mapDimensions.width, mapDimensions.height);\
+                            yPosition += mapDimensions.height + 5;\
+\
+                            // \uc0\u28155 \u21152 \u31614 \u21517 \u34920 \u21333 \
+                            if (signatureEnabledNow && signatureImageData && signatureDimensions) \{\
+                                // \uc0\u22914 \u26524 \u21097 \u20313 \u31354 \u38388 \u19981 \u36275 \u20197 \u23481 \u32435 \u31614 \u21517 \u34920 \u21333 \u65292 \u28155 \u21152 \u26032 \u39029 \u38754 \
+                                if (yPosition + signatureDimensions.height + 5 > A4_HEIGHT - MARGIN) \{\
+                                    pdf.addPage();\
+                                    yPosition = MARGIN;\
+                                \}\
+\
+                                // \uc0\u23558 yPosition\u35774 \u32622 \u20026 \u39029 \u38754 \u24213 \u37096 \u20943 \u21435  MARGIN \u21644 \u31614 \u21517 \u34920 \u21333 \u39640 \u24230 \
+                                yPosition = A4_HEIGHT - MARGIN - signatureDimensions.height;\
+\
+                                pdf.addImage(signatureImageData, 'PNG', MARGIN, yPosition, signatureDimensions.width, signatureDimensions.height);\
+                            \}\
+\
+                            // **\uc0\u22312 \u19979 \u36733 PDF\u20043 \u21069 \u28155 \u21152 \u27700 \u21360 **\
+                            const canvas = document.createElement('canvas');\
+                            const context = canvas.getContext('2d');\
+                            const dpi = 96;\
+                            const mmToInch = 1 / 25.4;\
+                            const pageWidthPx = pdf.internal.pageSize.getWidth() * dpi * mmToInch;\
+                            const pageHeightPx = pdf.internal.pageSize.getHeight() * dpi * mmToInch;\
+                            canvas.width = pageWidthPx;\
+                            canvas.height = pageHeightPx;\
+\
+                            // \uc0\u35774 \u32622 \u36879 \u26126 \u24230 \u20026 10%\
+                            context.globalAlpha = 0.05;\
+                            // \uc0\u35745 \u31639 \u39029 \u38754 \u23545 \u35282 \u32447 \u38271 \u24230 \
+                            const diagonalPx = Math.sqrt(pageWidthPx ** 2 + pageHeightPx ** 2);\
+\
+                            // \uc0\u35774 \u32622 \u23383 \u20307 \u21644 \u26679 \u24335 \
+                            let fontSize = diagonalPx / 8; // \uc0\u23558 \u23383 \u20307 \u22823 \u23567 \u35774 \u32622 \u20026 \u23545 \u35282 \u32447 \u38271 \u24230 \u30340 1/8\u65292 \u21487 \u26681 \u25454 \u38656 \u35201 \u35843 \u25972 	\
+                            context.font = `bold $\{fontSize\}px Arial`;\
+                            // \uc0\u35774 \u32622 \u25991 \u26412 \u39068 \u33394 \u20026 \u40657 \u33394 \
+                            context.fillStyle = '#000000';\
+                            context.textAlign = 'center';\
+                            context.textBaseline = 'middle';\
+                            // \uc0\u27979 \u37327 \u25991 \u26412 \u23485 \u24230 \
+                            let text = 'LinkBroad';\
+                            let textMetrics = context.measureText(text);\
+                            let textWidth = textMetrics.width;\
+                            // \uc0\u35843 \u25972 \u23383 \u20307 \u22823 \u23567 \u65292 \u30452 \u21040 \u25991 \u26412 \u23485 \u24230 \u30053 \u22823 \u20110 \u23545 \u35282 \u32447 \u38271 \u24230 \
+                            while (textWidth < diagonalPx) \{\
+                                fontSize += 10; // \uc0\u22686 \u21152 \u23383 \u20307 \u22823 \u23567 \
+                                context.font = `bold $\{fontSize\}px Arial`;\
+                                textMetrics = context.measureText(text);\
+                                textWidth = textMetrics.width;\
+                            \}\
+                            fontSize -= 40; // \uc0\u20943 \u23569 \u23383 \u20307 \u22823 \u23567 \
+                            context.font = `bold $\{fontSize\}px Arial`;\
+                            textMetrics = context.measureText(text);\
+                            textWidth = textMetrics.width;\
+\
+                            // \uc0\u35745 \u31639 \u26059 \u36716 \u35282 \u24230 \u65288 \u20174 \u24038 \u19978 \u35282 \u21040 \u21491 \u19979 \u35282 \u65289 \
+                            const angle = Math.atan2(pageHeightPx, pageWidthPx);\
+                            // \uc0\u23558  Canvas \u21407 \u28857 \u31227 \u21160 \u21040 \u39029 \u38754 \u20013 \u24515 \
+                            context.translate(pageWidthPx / 2, pageHeightPx / 2);\
+                            // \uc0\u26059 \u36716  Canvas\
+                            context.rotate(angle);\
+                            // \uc0\u32472 \u21046 \u25991 \u26412 \
+                            context.fillText('LinkBroad', 0, 0);\
+                            // \uc0\u23558  Canvas \u36716 \u25442 \u20026 \u22270 \u20687 \
+                            const watermarkImage = canvas.toDataURL('image/png');\
+                            // \uc0\u23558 \u27700 \u21360 \u22270 \u20687 \u28155 \u21152 \u21040  PDF\
+                            pdf.addImage(watermarkImage, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());\
+if (action === 'download') \{\
+    // \uc0\u19979 \u36733 PDF\
+    pdf.save(fileName);\
+    console.log('PDF saved:', fileName);\
+\} else if (action === 'cache') \{\
+    // \uc0\u32531 \u23384 \u35813 PDF\
+    try \{\
+        const pdfBlob = pdf.output('blob');\
+        cachePdfOnClient(pdfBlob, fileName);\
+    \} catch (err) \{\
+        console.error('Error generating PDF blob:', err);\
+        alert('\uc0\u32531 \u23384 PDF\u22833 \u36133 \u65292 \u35831 \u37325 \u35797 \u12290 ');\
+    \}\
+\}\
+\
+                        \};\
+\
+                        // \uc0\u22914 \u26524 \u31614 \u21517 \u21151 \u33021 \u24320 \u21551 \u65292 \u33719 \u21462 \u31614 \u21517 \u34920 \u21333 \u30340 \u22270 \u20687 \u21644 \u23610 \u23544 \
+                        if (signatureEnabledNow && signatureFormContainer) \{\
+                            html2canvas(signatureFormContainer, \{ scale: 3.0, useCORS: true \}).then(canvasSignature => \{\
+                                const signatureImage = canvasSignature.toDataURL('image/jpeg');\
+                                const signatureWidthMm = pxToMm(canvasSignature.width);\
+                                const signatureHeightMm = pxToMm(canvasSignature.height);\
+                                const signatureDimensions = getScaledDimensions(signatureWidthMm, signatureHeightMm, AVAILABLE_WIDTH, AVAILABLE_HEIGHT);\
+\
+                                generatePDF(signatureImage, signatureDimensions);\
+                            \}).catch(err => \{\
+                                console.error('Error capturing signature form:', err);\
+                                alert('\uc0\u23548 \u20986 PDF\u22833 \u36133 \u65292 \u31614 \u21517 \u24322 \u24120 \u12290 ');\
+                            \});\
+                        \} else \{\
+                            // \uc0\u26410 \u24320 \u21551 \u31614 \u21517 \u21151 \u33021 \u65292 \u30452 \u25509 \u29983 \u25104 PDF\
+                            generatePDF(null, null);\
+                        \}\
+\
+                    \}).catch(err => \{\
+                        console.error('Error capturing map image:', err);\
+                        alert('\uc0\u23548 \u20986 PDF\u22833 \u36133 \u65288 \u22270 \u32440 \u25429 \u33719 \u22833 \u36133 \u65289 \u65292 \u35831 \u37325 \u35797 \u12290 ');\
+                    \});\
+                \}).catch(err => \{\
+                    console.error('Error capturing mark summary:', err);\
+                    alert('\uc0\u23548 \u20986 PDF\u22833 \u36133 \u65288 \u26631 \u35760 \u27719 \u24635 \u25429 \u33719 \u22833 \u36133 \u65289 \u65292 \u35831 \u37325 \u35797 \u12290 ');\
+                \});\
+            \}).catch(err => \{\
+                console.error('Error capturing title:', err);\
+                alert('\uc0\u23548 \u20986 PDF\u22833 \u36133 \u65288 \u26631 \u39064 \u25429 \u33719 \u22833 \u36133 \u65289 \u65292 \u35831 \u37325 \u35797 \u12290 ');\
+            \});\
+        \};\
+        /**\
+         * \uc0\u25235 \u21462 \u26631 \u35760 \
+         * @param \{HTMLElement\} mark - \uc0\u26631 \u35760 \u20803 \u32032 \
+         */\
+        const grabMark = (mark) => \{\
+            if (grabbedMark) \{\
+                cancelGrab();\
+            \}\
+\
+            grabbedMark = mark;\
+            grabbedMark.classList.add('dragging');\
+            console.log(`Grabbing mark ID=$\{grabbedMark.dataset.markId\}`);\
+			\
+			// \uc0\u35760 \u24405 \u31227 \u21160 \u21069 \u30340 \u20301 \u32622 \
+            const initialPosition = \{\
+                x: parseFloat(mark.style.left),\
+                y: parseFloat(mark.style.top)\
+            \};\
+\
+            const overlay = document.createElement('div');\
+            overlay.id = 'drag-overlay';\
+            Object.assign(overlay.style, \{\
+                position: 'fixed',\
+                top: '0',\
+                left: '0',\
+                width: '100%',\
+                height: '100%',\
+                cursor: 'grabbing',\
+                zIndex: '9999'\
+            \});\
+            document.body.appendChild(overlay);\
+\
+            const onMouseMove = (e) => \{\
+                const rect = panzoomElement.getBoundingClientRect();\
+                let x = ((e.clientX - rect.left) / rect.width) * 100;\
+                let y = ((e.clientY - rect.top) / rect.height) * 100;\
+\
+                x = Math.max(0, Math.min(100, x));\
+                y = Math.max(0, Math.min(100, y));\
+\
+                mark.style.left = `$\{x\}%`;\
+                mark.style.top = `$\{y\}%`;\
+\
+                const label = document.querySelector(`.label[data-mark-id="$\{mark.dataset.markId\}"]`);\
+                if (label) \{\
+                    label.style.left = `$\{x\}%`;\
+                    label.style.top = `calc($\{y\}% + 1px)`;\
+                \}\
+                const bindingLabel = document.querySelector(`.binding-label[data-mark-id="$\{mark.dataset.markId\}"]`);\
+                if (bindingLabel) \{\
+                    bindingLabel.style.left = mark.style.left;\
+                    bindingLabel.style.top = mark.style.top;\
+                \}\
+            \};\
+\
+            const onClickPlace = (e) => \{\
+                const rect = panzoomElement.getBoundingClientRect();\
+                let x = ((e.clientX - rect.left) / rect.width) * 100;\
+                let y = ((e.clientY - rect.top) / rect.height) * 100;\
+\
+                x = Math.max(0, Math.min(100, x));\
+                y = Math.max(0, Math.min(100, y));\
+\
+                mark.style.left = `$\{x\}%`;\
+                mark.style.top = `$\{y\}%`;\
+\
+                const label = document.querySelector(`.label[data-mark-id="$\{mark.dataset.markId\}"]`);\
+                if (label) \{\
+                    label.style.left = `$\{x\}%`;\
+                    label.style.top = `calc($\{y\}% + 1px)`;\
+                \}\
+\
+                console.log(`Mark ID=$\{mark.dataset.markId\} moved to x=$\{x\}, y=$\{y\}`);\
+\
+                const markId = mark.dataset.markId;\
+                fetch(`/api/update_mark_position/$\{markId\}`, \{\
+                    method: 'POST',\
+                    headers: \{\
+                        'Content-Type': 'application/json',\
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+                    \},\
+                    body: JSON.stringify(\{ x, y \})\
+                \})\
+                .then(response => response.json())\
+                .then(data => \{\
+                    if (data.status === 'success') \{\
+                        console.log(`Mark $\{markId\} position updated to x: $\{x\}, y: $\{y\}`);\
+						// \uc0\u35760 \u24405 \'93\u31227 \u21160 \'94\u21160 \u20316 \
+						pushAction(\{\
+						    type: 'move',\
+							markId: markId,\
+							previousPosition: initialPosition,\
+							newPosition: \{ x, y \}\
+						\});\
+                    \} else \{\
+                        alert('\uc0\u26356 \u26032 \u26631 \u35760 \u20301 \u32622 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                    \}\
+                \})\
+                .catch(err => \{\
+                    console.error('Fetch Error:', err);\
+                    alert('\uc0\u26356 \u26032 \u26631 \u35760 \u20301 \u32622 \u22833 \u36133 : ' + err);\
+                \});\
+\
+                cancelGrab();\
+            \};\
+\
+            const cancelGrab = () => \{\
+                if (grabbedMark) \{\
+                    grabbedMark.classList.remove('dragging');\
+                    console.log(`Cancelled grabbing mark ID=$\{grabbedMark.dataset.markId\}`);\
+                    grabbedMark = null;\
+                \}\
+                if (overlay) \{\
+                    overlay.removeEventListener('mousemove', onMouseMove);\
+                    overlay.removeEventListener('click', onClickPlace);\
+                    document.body.removeChild(overlay);\
+                    console.log('Overlay removed.');\
+                \}\
+                document.removeEventListener('keydown', onKeyDown);\
+            \};\
+\
+            const onKeyDown = (e) => \{\
+                if (e.key === 'Escape') \{\
+                    cancelGrab();\
+                \}\
+            \};\
+\
+            overlay.addEventListener('mousemove', onMouseMove);\
+            overlay.addEventListener('click', onClickPlace);\
+            document.addEventListener('keydown', onKeyDown);\
+\
+            overlay.addEventListener('click', function once() \{\
+                cancelGrab();\
+                overlay.removeEventListener('click', once);\
+                document.removeEventListener('keydown', onKeyDown);\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u28155 \u21152 \u26631 \u35760 \u34920 \u21333 \u25552 \u20132 \u22788 \u29702 \
+         */\
+        const handleAddMarkForm = () => \{\
+            const addMarkForm = document.getElementById('addMarkForm');\
+            let isSubmitting = false;\
+\
+            addMarkForm.addEventListener('submit', (e) => \{\
+                e.preventDefault();\
+\
+                if (isSubmitting) return;\
+                isSubmitting = true;\
+\
+                const x = parseFloat(document.getElementById('mark_x').value);\
+                const y = parseFloat(document.getElementById('mark_y').value);\
+                const color = document.getElementById('mark_color').value;\
+                const label = document.getElementById('mark_label').value;\
+                const isWeakElectric = document.getElementById('addAsWeakElectric').checked;\
+\
+                const markType = isWeakElectric ? 'WeakElectric' : 'AP';\
+\
+                let weakElectricId = null;\
+                if (!isWeakElectric) \{\
+                    const selectedMapFloor = document.getElementById('add_select_map_floor').value;\
+                    if (selectedMapFloor) \{\
+                        weakElectricId = parseInt(document.getElementById('add_select_weak_electric').value) || null;\
+                    \}\
+                \}\
+\
+                fetch(`/add_mark/\{\{ map.id \}\}`, \{\
+                    method: 'POST',\
+                    headers: \{\
+                        'Content-Type': 'application/json',\
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+                    \},\
+                    body: JSON.stringify(\{ x, y, color, label, type: markType, weak_electric_id: weakElectricId \})\
+                \})\
+                .then(response => response.json())\
+                .then(data => \{\
+                    console.log('Add Mark Response:', data);\
+                    if (data.status === 'success' && data.mark && data.mark.id) \{\
+                        const newMark = createMarkElement(data.mark);\
+                        panzoomElement.appendChild(newMark);\
+                        bindMarkEvents(newMark);\
+                        \
+                        if (apBindingLabelsVisible) \{\
+                            updateBindingLabelForMark(newMark);\
+                        \}\
+\
+                        if (!isWeakElectric) \{\
+                            updateMarkCount(color.toLowerCase(), 1);\
+                        \}\
+						\
+						// \uc0\u35760 \u24405 \'93\u28155 \u21152 \'94\u21160 \u20316 \
+						pushAction(\{\
+						    type: 'add',\
+							mark: data.mark\
+						\});\
+\
+                        // \uc0\u23545 \u20110 WeakElectric\u26631 \u35760 \u65292 \u30452 \u25509 \u37325 \u26032 \u28210 \u26579 \u27719 \u24635 \
+                        if (markType === 'WeakElectric') \{\
+                            renderMarkSummary();\
+                            loadWeakElectricData(() => \{\
+                                if (apBindingLabelsVisible) \{\
+                                    removeApBindingLabels();\
+                                    loadApBindingLabels();\
+                                \}\
+                            \});\
+                        \}\
+                        lastSelectedColor = color;\
+                        lastEnteredLabel = label;\
+\
+                        $('#addMarkModal').modal('hide');\
+                        console.log(`Mark $\{data.mark.id\} added successfully.`);\
+                    \} else \{\
+                        alert('\uc0\u28155 \u21152 \u26631 \u35760 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                        console.error('Add mark failed:', data);\
+                    \}\
+                \})\
+                .catch(err => \{\
+                    console.error('Fetch Error:', err);\
+                    alert('\uc0\u28155 \u21152 \u26631 \u35760 \u22833 \u36133 : ' + err);\
+                \})\
+                .finally(() => \{\
+                    isSubmitting = false;\
+                \});\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u32534 \u36753 \u26631 \u35760 \u34920 \u21333 \u25552 \u20132 \u22788 \u29702 \
+         */\
+        const handleEditMarkForm = () => \{\
+            const editMarkForm = document.getElementById('editMarkForm');\
+\
+            editMarkForm.addEventListener('submit', (e) => \{\
+                e.preventDefault();\
+\
+                const markId = document.getElementById('edit_mark_id').value;\
+                const label = document.getElementById('edit_mark_label').value;\
+                const color = document.getElementById('edit_mark_color').value;\
+                const markElement = document.getElementById(`mark-$\{markId\}`);\
+                const markType = markElement.getAttribute('data-type');\
+\
+                let originalColor;\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    originalColor = markElement.style.borderColor.toLowerCase();\
+                \} else \{\
+                    originalColor = markElement.style.backgroundColor.toLowerCase();\
+                \}\
+\
+                let weakElectricId = null;\
+                if (markType !== 'WeakElectric') \{\
+                    const selectedMapFloor = document.getElementById('edit_select_map_floor').value;\
+                    if (selectedMapFloor) \{\
+                        weakElectricId = parseInt(document.getElementById('edit_select_weak_electric').value) || null;\
+                    \}\
+                \}\
+				\
+				// \uc0\u33719 \u21462 \u24403 \u21069 \u26631 \u31614 \
+				const labelDiv = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+				const currentLabel = labelDiv ? labelDiv.textContent : '';\
+				// \uc0\u35760 \u24405 \u32534 \u36753 \u21069 \u30340 \u29366 \u24577 \
+				const previousState = \{\
+				    label: currentLabel,\
+					color: originalColor,\
+					weak_electric_id: markElement.getAttribute('data-weak-electric-id') || null\
+				\};\
+\
+                fetch(`/edit_mark/$\{markId\}`, \{\
+                    method: 'POST',\
+                    headers: \{\
+                        'Content-Type': 'application/json',\
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+                    \},\
+                    body: JSON.stringify(\{ label, color, weak_electric_id: weakElectricId \})\
+                \})\
+                .then(response => response.json())\
+                .then(data => \{\
+                    console.log('Edit Mark Response:', data);\
+                    if (data.status === 'success') \{\
+                        if (markElement.classList.contains('weak-electric-mark')) \{\
+                            markElement.style.borderColor = color;\
+                            markElement.style.color = color;\
+                        \} else \{\
+                            markElement.style.backgroundColor = color;\
+                        \}\
+\
+                        markElement.setAttribute('data-weak-electric-id', weakElectricId || '');\
+\
+                        const currentSize = getCurrentSize();\
+                        const settings = sizeSettings[currentSize];\
+\
+                        const labelDiv = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+                        if (labelDiv) \{\
+                            labelDiv.textContent = label;\
+                            labelDiv.style.fontSize = settings.labelFontSize;\
+                        \} else if (label) \{\
+                            const newLabelDiv = document.createElement('div');\
+                            newLabelDiv.classList.add('label');\
+                            newLabelDiv.style.top = `calc($\{markElement.style.top\} + 1px)`;\
+                            newLabelDiv.style.left = markElement.style.left;\
+                            newLabelDiv.style.fontSize = settings.labelFontSize;\
+                            newLabelDiv.textContent = label;\
+                            newLabelDiv.setAttribute('data-mark-id', markId); // \uc0\u28155 \u21152 \u20851 \u32852 \u23646 \u24615 \
+                            panzoomElement.appendChild(newLabelDiv);\
+                        \}\
+\
+                        if (!markElement.classList.contains('weak-electric-mark')) \{\
+                            if (originalColor && originalColor !== color.toLowerCase()) \{\
+                                updateMarkCountWithoutRenderMarkSummary(originalColor, -1);\
+                                updateMarkCountWithoutRenderMarkSummary(color.toLowerCase(), 1);\
+                            \}\
+                        \}\
+                        // **renderMarkSummary \uc0\u35843 \u29992  \u25191 \u34892 \u34920 \u21333 \u21047 \u26032 **\
+                        renderMarkSummary();\
+						\
+						// \uc0\u35760 \u24405 \'93\u32534 \u36753 \'94\u21160 \u20316 \
+						pushAction(\{\
+						    type: 'edit',\
+							markId: markId,\
+							previousState: previousState\
+						\});\
+\
+                        $('#editMarkModal').modal('hide');\
+                        console.log(`Mark $\{markId\} edited successfully.`);\
+                        if (markElement.classList.contains('weak-electric-mark')) \{\
+                            loadWeakElectricData(() => \{\
+                                if (apBindingLabelsVisible) \{\
+                                    removeApBindingLabels();\
+                                    loadApBindingLabels();\
+                                \}\
+                            \});\
+                        \}\
+                        if (apBindingLabelsVisible) \{\
+                            updateBindingLabelForMark(markElement);\
+                        \}\
+\
+                    \} else \{\
+                        alert('\uc0\u32534 \u36753 \u26631 \u35760 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                        console.error('Edit mark failed:', data);\
+                    \}\
+                \})\
+                .catch(err => \{\
+                    console.error('Fetch Error:', err);\
+                    alert('\uc0\u32534 \u36753 \u26631 \u35760 \u22833 \u36133 : ' + err);\
+                \});\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u21024 \u38500 \u26631 \u35760 \u25353 \u38062 \u22788 \u29702 \
+         */\
+        const handleDeleteMarkButton = () => \{\
+            document.getElementById('deleteMarkButton').addEventListener('click', () => \{\
+                const markId = document.getElementById('edit_mark_id').value;\
+                const markElement = document.getElementById(`mark-$\{markId\}`);\
+                const markType = markElement.getAttribute('data-type');\
+                \
+                if (markType === 'WeakElectric') \{\
+                    // \uc0\u36890 \u36807  API \u26816 \u26597 \u24369 \u30005 \u20117 \u26631 \u35760 \u26159 \u21542 \u26377 \u32465 \u23450 \
+                    fetch(`/api/check_weak_electric_bindings/$\{markId\}`, \{\
+                        method: 'GET',\
+                        headers: \{\
+                            'Content-Type': 'application/json',\
+                        \},\
+                    \})\
+                    .then(response => response.json())\
+                    .then(data => \{\
+                        if (data.status === 'success') \{\
+                            const hasBindings = data.has_bindings;\
+                            if (hasBindings) \{\
+                                $('#deleteConfirmModal').modal('show');\
+                            \} else \{\
+                                if (confirm('\uc0\u30830 \u35748 \u21024 \u38500 \u27492 \u26631 \u35760 \u21527 \u65311 ')) \{\
+                                    deleteMark(markId, false);\
+                                \}\
+                            \}\
+                        \} else \{\
+                            console.error('Failed to check weak electric bindings:', data.message);\
+                            alert('\uc0\u26080 \u27861 \u26816 \u26597 \u24369 \u30005 \u20117 \u30340 \u32465 \u23450 \u29366 \u24577 \u12290 ');\
+                        \}\
+                    \})\
+                    .catch(err => \{\
+                        console.error('Fetch Error:', err);\
+                        alert('\uc0\u26080 \u27861 \u26816 \u26597 \u24369 \u30005 \u20117 \u30340 \u32465 \u23450 \u29366 \u24577 \u12290 ');\
+                    \});\
+                \} else \{\
+                    if (confirm('\uc0\u30830 \u35748 \u21024 \u38500 \u27492 \u26631 \u35760 \u21527 \u65311 ')) \{\
+                        deleteMark(markId, false);\
+                    \}\
+                \}\
+            \});\
+        \};\
+\
+/**\
+ * \uc0\u21024 \u38500 \u26631 \u35760 \u24182 \u22788 \u29702 \u32465 \u23450 \u20851 \u31995 \
+ * @param \{number\} markId - \uc0\u26631 \u35760 ID\
+ * @param \{boolean\} force - \uc0\u26159 \u21542 \u24378 \u21046 \u21024 \u38500 \u65288 \u35299 \u38500 \u32465 \u23450 \u65289 \
+ */\
+const deleteMark = (markId, force) => \{\
+    fetch(`/api/delete_mark/$\{markId\}?force=$\{force\}`, \{\
+        method: 'DELETE',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \}\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Delete Mark Response:', data);\
+        if (data.status === 'success') \{\
+            const markElement = document.getElementById(`mark-$\{markId\}`);\
+            if (markElement) \{\
+                const labelElement = document.querySelector(`.label:not(.binding-label)[data-mark-id="$\{markId\}"]`);\
+                let color;\
+                let markType;\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    color = markElement.style.borderColor.toLowerCase();\
+                    markType = 'WeakElectric';\
+                \} else \{\
+                    color = markElement.style.backgroundColor.toLowerCase();\
+                    markType = 'AP';\
+                \}\
+\
+                // \uc0\u35760 \u24405 \u34987 \u21024 \u38500 \u30340 \u26631 \u35760 \u20449 \u24687 \
+                const deletedMark = \{\
+                    id: markId,\
+                    x: parseFloat(markElement.style.left),\
+                    y: parseFloat(markElement.style.top),\
+                    color: markType === 'WeakElectric' ? markElement.style.borderColor : markElement.style.backgroundColor,\
+                    type: markType,\
+                    label: labelElement ? labelElement.textContent : '',\
+                    weak_electric_id: markElement.getAttribute('data-weak-electric-id') || null\
+                \};\
+\
+                // \uc0\u35760 \u24405 \'93\u21024 \u38500 \'94\u21160 \u20316 \
+                pushAction(\{\
+                    type: 'delete',\
+                    mark: deletedMark\
+                \});\
+\
+                markElement.remove();\
+                if (labelElement) \{\
+                    labelElement.remove();\
+                \}\
+                const bindingLabel = document.querySelector(`.binding-label[data-mark-id="$\{markId\}"]`);\
+                if (bindingLabel) \{\
+                    bindingLabel.remove();\
+                \}\
+\
+                if (!markElement.classList.contains('weak-electric-mark')) \{\
+                    if (color) \{\
+                        updateMarkCount(color, -1);\
+                    \}\
+                \}\
+\
+                if (markElement.classList.contains('weak-electric-mark')) \{\
+                    const index = weakElectricUsedColors.indexOf(color);\
+                    if (index > -1) \{\
+                        weakElectricUsedColors.splice(index, 1);\
+                    \}\
+                    // \uc0\u23545 \u20110 WeakElectric\u26631 \u35760 \u65292 \u30452 \u25509 \u37325 \u26032 \u28210 \u26579 \u27719 \u24635 \
+                    renderMarkSummary();\
+                    loadWeakElectricData(() => \{\
+                        if (apBindingLabelsVisible) \{\
+                            removeApBindingLabels();\
+                            loadApBindingLabels();\
+                        \}\
+                    \});\
+                \}\
+\
+                $('#editMarkModal').modal('hide');\
+                console.log(`Mark $\{markId\} deleted successfully.`);\
+            \}\
+        \} else \{\
+            alert('\uc0\u21024 \u38500 \u26631 \u35760 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+            console.error('Delete mark failed:', data);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+        alert('\uc0\u21024 \u38500 \u26631 \u35760 \u22833 \u36133 : ' + err);\
+    \});\
+\};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u39068 \u33394 \u32465 \u23450 \u30456 \u20851 \u20107 \u20214 \
+         */\
+        const bindBindingEvents = () => \{\
+            // \uc0\u21487 \u20197 \u22312 \u36825 \u37324 \u28155 \u21152 \u26356 \u22810 \u32465 \u23450 \u30456 \u20851 \u30340 \u20107 \u20214 \u22788 \u29702 \
+        \};\
+\
+        /**\
+         * \uc0\u26174 \u31034 WeakElectric\u30340 AP\u32465 \u23450 \u20449 \u24687 \
+         * @param \{number\} weakElectricId - \uc0\u24369 \u30005 \u20117 \u26631 \u35760 ID\
+         */\
+        const showApBindings = (weakElectricId) => \{\
+            fetch(`/api/get_ap_bindings/$\{weakElectricId\}`, \{\
+                method: 'GET',\
+                headers: \{\
+                    'Content-Type': 'application/json'\
+                \}\
+            \})\
+            .then(response => response.json())\
+            .then(data => \{\
+                if (data.status === 'success') \{\
+                    const bindings = data.bindings;\
+\
+                    // \uc0\u33719 \u21462 WeakElectric\u26631 \u35760 \u30340 \u39068 \u33394 \u21644 \u23450 \u20041 \
+                    const markElement = document.getElementById(`mark-$\{weakElectricId\}`);\
+                    const markColor = markElement.style.borderColor.toLowerCase();\
+                    const markDefinition = weak_electric_definitions[markColor];\
+                    \
+                    // \uc0\u26500 \u24314 \u26631 \u39064 \
+                    let content = `<h5>$\{mapName\}/$\{mapFloor\} - $\{markDefinition\} ($\{colorLabelMap[markColor]\}) \uc0\u30340 AP\u32465 \u23450 \u24773 \u20917 </h5>`;\
+                    if (bindings.length === 0) \{\
+                        content += '<p>\uc0\u26242 \u26080 AP\u32465 \u23450 \u12290 </p>';\
+                    \} else \{\
+                        const summary = bindings.reduce((acc, ap) => \{\
+                            acc.total += 1;\
+                            acc.models[ap.definition] = (acc.models[ap.definition] || 0) + 1;\
+                            return acc;\
+                        \}, \{ total: 0, models: \{\} \});\
+\
+                        content += `<p>\uc0\u24635 \u25968 : $\{summary.total\}</p>`;\
+                        content += '<h6>\uc0\u22411 \u21495 \u27719 \u24635 \u65306 </h6><ul>';\
+                        for (const [definition, count] of Object.entries(summary.models)) \{\
+                            content += `<li>$\{definition\}: $\{count\}</li>`;\
+                        \}\
+                        content += '</ul>';\
+                    \}\
+\
+                    $('#apBindingsModal .modal-body').html(content);\
+                    $('#apBindingsModal').modal('show');\
+                \} else \{\
+                    alert('\uc0\u33719 \u21462 AP\u32465 \u23450 \u20449 \u24687 \u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+                \}\
+            \})\
+            .catch(err => \{\
+                console.error('Fetch Error:', err);\
+                alert('\uc0\u33719 \u21462 AP\u32465 \u23450 \u20449 \u24687 \u22833 \u36133 : ' + err);\
+            \});\
+        \};\
+\
+/**\
+ * \uc0\u24038 \u38190 \u28857 \u20987 \u31354 \u30333 \u21306 \u22495 \u28155 \u21152 \u26631 \u35760 \
+ */\
+const bindMapClick = () => \{\
+    panzoomElement.addEventListener('click', (e) => \{\
+        if (e.target === panzoomElement || e.target.id === 'map-image') \{\
+            const rect = panzoomElement.getBoundingClientRect();\
+            const x = ((e.clientX - rect.left) / rect.width) * 100;\
+            const y = ((e.clientY - rect.top) / rect.height) * 100;\
+\
+            if (isMobileDevice()) \{\
+                // \uc0\u31227 \u21160 \u31471 \u36923 \u36753 \
+                if (quickAddConfig) \{\
+                    // \uc0\u24050 \u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u65292 \u30452 \u25509 \u25191 \u34892 \u24555 \u25463 \u28155 \u21152 \
+                    addAPQuickly(x, y);\
+                \} else \{\
+                    // \uc0\u26410 \u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u65292 \u25171 \u24320 \u28155 \u21152 \u26631 \u35760 \u27169 \u24577 \u26694 \
+                    openAddMarkModal(x, y);\
+                \}\
+            \} else \{\
+                // \uc0\u26700 \u38754 \u31471 \u36923 \u36753 \u20445 \u25345 \u19981 \u21464 \
+                if (e.shiftKey) \{\
+                    // Shift + \uc0\u24038 \u38190 \u28857 \u20987 \u65292 \u36827 \u34892 \u24555 \u25463 \u28155 \u21152 \
+                    if (quickAddConfig) \{\
+                        addAPQuickly(x, y);\
+                    \} else \{\
+                        alert('\uc0\u35831 \u20808 \u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u12290 ');\
+                    \}\
+                \} else \{\
+                    openAddMarkModal(x, y);\
+                \}\
+            \}\
+        \}\
+    \});\
+\};\
+\
+/**\
+ * \uc0\u25171 \u24320 \u28155 \u21152 \u26631 \u35760 \u27169 \u24577 \u26694 \u24182 \u20445 \u23384  Panzoom \u29366 \u24577 \
+ * @param \{number\} x - X \uc0\u22352 \u26631 \u65288 \u30334 \u20998 \u27604 \u65289 \
+ * @param \{number\} y - Y \uc0\u22352 \u26631 \u65288 \u30334 \u20998 \u27604 \u65289 \
+ */\
+function openAddMarkModal(x, y) \{\
+    if (panzoomInstance) \{\
+        localStorage.setItem('panzoomScale', panzoomInstance.getScale());\
+        localStorage.setItem('panzoomX', panzoomInstance.getPan().x);\
+        localStorage.setItem('panzoomY', panzoomInstance.getPan().y);\
+        console.log('Panzoom state saved:', \{\
+            scale: panzoomInstance.getScale(),\
+            x: panzoomInstance.getPan().x,\
+            y: panzoomInstance.getPan().y\
+        \});\
+    \}\
+\
+    $('#addMarkModal').modal('show');\
+    document.getElementById('mark_x').value = x.toFixed(2);\
+    document.getElementById('mark_y').value = y.toFixed(2);\
+    if (lastSelectedColor) \{\
+        document.getElementById('mark_color').value = lastSelectedColor;\
+    \}\
+    document.getElementById('mark_label').value = lastEnteredLabel;\
+\}\
+\
+/**\
+ * \uc0\u26816 \u27979 \u26159 \u21542 \u20026 \u31227 \u21160 \u35774 \u22791 \
+ * @returns \{boolean\} - \uc0\u22914 \u26524 \u26159 \u31227 \u21160 \u35774 \u22791 \u21017 \u36820 \u22238  true\
+ */\
+function isMobileDevice() \{\
+    return /Mobi|Android|iPhone|iPad|iPod|Windows Phone|Opera Mini/i.test(navigator.userAgent);\
+\}\
+\
+        \
+/**\
+ * \uc0\u24555 \u36895 \u28155 \u21152  AP \u26631 \u35760 \
+ * @param \{number\} x - X \uc0\u22352 \u26631 \u65288 \u30334 \u20998 \u27604 \u65289 \
+ * @param \{number\} y - Y \uc0\u22352 \u26631 \u65288 \u30334 \u20998 \u27604 \u65289 \
+ */\
+const addAPQuickly = (x, y) => \{\
+    const color = quickAddConfig.color;\
+    let label = quickAddConfig.label;\
+    const selectedMapFloor = quickAddConfig.select_map_floor;\
+    let weakElectricId = null;\
+    const autoLabel = quickAddConfig.autoLabel;\
+    \
+    if (selectedMapFloor) \{\
+        weakElectricId = parseInt(quickAddConfig.select_weak_electric) || null;\
+    \}\
+\
+    if (autoLabel) \{\
+        // \uc0\u33719 \u21462 \u24403 \u21069 \u22270 \u32440 \u19978 \u30340  AP \u25968 \u37327 \
+        const currentAPs = document.querySelectorAll('.mark:not(.weak-electric-mark)').length;\
+        const newLabelNumber = currentAPs + 1;\
+        // \uc0\u19981 \u36275 \u20004 \u20301 \u25968 \u21069 \u38754 \u34917 0\
+        const paddedNumber = newLabelNumber.toString().padStart(2, '0');\
+        label = 'AP' + paddedNumber;\
+    \}\
+\
+    fetch(`/add_mark/\{\{ map.id \}\}`, \{\
+        method: 'POST',\
+        headers: \{\
+            'Content-Type': 'application/json',\
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')\
+        \},\
+        body: JSON.stringify(\{ x, y, color, label, type: 'AP', weak_electric_id: weakElectricId \})\
+    \})\
+    .then(response => response.json())\
+    .then(data => \{\
+        console.log('Add AP Response:', data);\
+        if (data.status === 'success' && data.mark && data.mark.id) \{\
+            const newMark = createMarkElement(data.mark);\
+            panzoomElement.appendChild(newMark);\
+            bindMarkEvents(newMark);\
+                // \uc0\u22914 \u26524 \u32465 \u23450 \u26631 \u31614 \u21487 \u35265 \u65292 \u26356 \u26032 \u32465 \u23450 \u26631 \u31614 \
+            if (apBindingLabelsVisible) \{\
+                updateBindingLabelForMark(newMark);\
+            \}\
+\
+            updateMarkCount(color.toLowerCase(), 1);\
+\
+            // \uc0\u35760 \u24405 \'93\u28155 \u21152 \'94\u21160 \u20316 \
+            pushAction(\{\
+                type: 'add',\
+                mark: data.mark\
+            \});\
+\
+            console.log(`AP Mark $\{data.mark.id\} added quickly.`);\
+        \} else \{\
+            alert('\uc0\u24555 \u25463 \u28155 \u21152 AP\u22833 \u36133 : ' + (data.message || '\u26410 \u30693 \u38169 \u35823 '));\
+            console.error('Quick add AP failed:', data);\
+        \}\
+    \})\
+    .catch(err => \{\
+        console.error('Fetch Error:', err);\
+        alert('\uc0\u24555 \u25463 \u28155 \u21152 AP\u22833 \u36133 : ' + err);\
+    \});\
+\};\
+\
+        /**\
+         * \uc0\u21152 \u36733 \u21487 \u32465 \u23450 \u30340 WeakElectric\u26631 \u35760 \u36873 \u39033 \
+         * @param \{string\} [mode] - \uc0\u27169 \u24335 \u65292 'add' \u25110  'edit' \u25110  'quickAdd'\
+         * @param \{number\} [selectedWeakElectricId] - \uc0\u39044 \u36873 \u30340 WeakElectric\u26631 \u35760 ID\u65288 \u20165 \u22312 edit\u21644 quickAdd\u27169 \u24335 \u19979 \u20351 \u29992 \u65289 \
+         */\
+        const loadWeakElectricOptions = (mode = 'add', selectedWeakElectricId = null) => \{\
+            let selectMapFloorElement, selectWeakElectricElement;\
+\
+            switch(mode) \{\
+                case 'add':\
+                    selectMapFloorElement = document.getElementById('add_select_map_floor');\
+                    selectWeakElectricElement = document.getElementById('add_select_weak_electric');\
+                    break;\
+                case 'edit':\
+                    selectMapFloorElement = document.getElementById('edit_select_map_floor');\
+                    selectWeakElectricElement = document.getElementById('edit_select_weak_electric');\
+                    break;\
+                case 'quickAdd':\
+                    selectMapFloorElement = document.getElementById('quickAdd_select_map_floor');\
+                    selectWeakElectricElement = document.getElementById('quickAdd_select_weak_electric');\
+                    break;\
+                default:\
+                    console.error('Unknown mode for loading WeakElectric options.');\
+                    return;\
+            \}\
+\
+            populateMapFloorSelect(selectMapFloorElement);\
+            // \uc0\u22914 \u26524 \u26377 \u39044 \u36873 \u39033 \u65292 \u21017 \u35302 \u21457 \u21464 \u21270 \u20107 \u20214 \u20197 \u21152 \u36733 \u24369 \u30005 \u20117 \
+            if (selectedWeakElectricId) \{\
+                const selectedWeMark = Object.values(weakElectricMarksData).find(weMark => weMark.id === selectedWeakElectricId);\
+                if (selectedWeMark) \{\
+                    const mapFloorKey = `$\{selectedWeMark.map_floor\}`;\
+                    selectMapFloorElement.value = mapFloorKey;\
+                    populateWeakElectricSelect(selectWeakElectricElement, mapFloorKey);\
+                    selectWeakElectricElement.value = selectedWeakElectricId;\
+                \}\
+            \} else \{\
+                // **\uc0\u20851 \u38190 \u35843 \u25972 \u65306 \u40664 \u35748 \u36873 \u25321 \u24403 \u21069 \u22270 \u32440 /\u27004 \u23618 **\
+                const currentMapFloorKey = `$\{mapFloor\}`;\
+                selectMapFloorElement.value = currentMapFloorKey;\
+                populateWeakElectricSelect(selectWeakElectricElement, currentMapFloorKey);\
+                selectWeakElectricElement.value = ''; // \uc0\u36873 \u25321 \'93\u19981 \u32465 \u23450 \'94\
+            \}\
+        \};\
+\
+        /**\
+         * \uc0\u30830 \u35748 \u21024 \u38500 \u24182 \u35299 \u38500 \u32465 \u23450 \u20851 \u31995 \
+         */\
+        const confirmDeleteAndUnbind = (markId) => \{\
+            deleteMark(markId, true);\
+            $('#deleteConfirmModal').modal('hide');\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u21024 \u38500 \u30830 \u35748 \u27169 \u24577 \u26694 \u20107 \u20214 \
+         */\
+        const initializeDeleteConfirmModal = () => \{\
+            document.getElementById('confirmDeleteAndUnbindButton').addEventListener('click', () => \{\
+                const markId = document.getElementById('edit_mark_id').value;\
+                confirmDeleteAndUnbind(markId);\
+            \});\
+\
+            document.getElementById('cancelDeleteButton').addEventListener('click', () => \{\
+                $('#deleteConfirmModal').modal('hide');\
+            \});\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u25152 \u26377 \u20107 \u20214 \u32465 \u23450 \
+         */\
+        const initializeEventBindings = () => \{\
+            bindDropdownEvents();\
+            handleAddMarkForm();\
+            handleEditMarkForm();\
+            handleDeleteMarkButton();\
+            bindButtonEvents();\
+            initializeDeleteConfirmModal();\
+            document.getElementById('toggleApBindingButton').addEventListener('click', () => \{\
+                apBindingLabelsVisible = !apBindingLabelsVisible;\
+                if (apBindingLabelsVisible) \{\
+                    document.getElementById('toggleApBindingButton').textContent = '\uc0\u38544 \u34255 AP\u32465 \u23450 ';\
+                    loadApBindingLabels();\
+                \} else \{\
+                    document.getElementById('toggleApBindingButton').textContent = '\uc0\u21152 \u36733 AP\u32465 \u23450 ';\
+                    removeApBindingLabels();\
+                \}\
+            \});\
+			// \uc0\u32465 \u23450 \'93\u25764 \u38144 \'94\u25353 \u38062 \u20107 \u20214 \
+			document.getElementById('undoButton').addEventListener('click', () => \{\
+			     undoLastAction();\
+			\});\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270  Panzoom \u21644 \u32465 \u23450 \u26631 \u35760 \u20107 \u20214 \
+         */\
+        const initializeMap = () => \{\
+            initializePanzoom();\
+            restorePanzoomState();\
+            bindAllMarks();\
+\
+            // \uc0\u24403  Panzoom \u21021 \u22987 \u21270 \u23436 \u25104 \u21518 \u65292 \u38544 \u34255 \u21152 \u36733 \u21160 \u30011 \
+            if (mapLoadingOverlay) \{\
+                mapLoadingOverlay.style.display = 'none';\
+                console.log('\uc0\u21152 \u36733 \u21160 \u30011 \u24050 \u38544 \u34255 \u65292 Panzoom \u21021 \u22987 \u21270 \u23436 \u25104 \u12290 ');\
+            \}\
+        \};\
+\
+        /**\
+         * \uc0\u21021 \u22987 \u21270 \u39068 \u33394 \u32465 \u23450 \u30456 \u20851 \u20107 \u20214 \
+         */\
+        bindBindingEvents();\
+\
+        // \uc0\u21021 \u22987 \u21270 \u26631 \u35760 \u27719 \u24635 \u34920 \u21333 \
+        renderMarkSummary();\
+\
+        // \uc0\u21021 \u22987 \u21270 \u25152 \u26377 \u20107 \u20214 \u32465 \u23450 \
+        initializeEventBindings();\
+        initializeColorDropdowns();\
+\
+        /**\
+         * \uc0\u35774 \u32622 \u22270 \u32440 \u21021 \u22987 \u21270 \
+         */\
+        const setupMapInitialization = () => \{\
+            const naturalWidth = mapImage.naturalWidth;\
+            const naturalHeight = mapImage.naturalHeight;\
+            const containerWidth = mapContainer.clientWidth;\
+            const aspectRatio = (naturalHeight / naturalWidth) * 100;\
+            const containerHeight = containerWidth * (naturalHeight / naturalWidth);\
+\
+            mapContainer.style.height = `$\{containerHeight\}px`;\
+            console.log(`Map container height set to $\{containerHeight\}px based on image aspect ratio.`);\
+\
+            initializeMap();\
+            initializeSizeSetting();\
+        \};\
+\
+        /**\
+         * \uc0\u32465 \u23450 \u22270 \u20687 \u21152 \u36733 \u20107 \u20214 \
+         */\
+        const handleMapImageLoad = () => \{\
+            // \uc0\u24403 \u22270 \u20687 \u21152 \u36733 \u23436 \u25104 \u21518 \u65292 \u21021 \u22987 \u21270 \u22270 \u32440 \u24182 \u38544 \u34255 \u21152 \u36733 \u21160 \u30011 \
+            setupMapInitialization();\
+        \};\
+\
+        // \uc0\u32465 \u23450 \u22270 \u20687 \u21152 \u36733 \u20107 \u20214 \
+        mapImage.addEventListener('load', handleMapImageLoad);\
+\
+        // \uc0\u22914 \u26524 \u22270 \u20687 \u24050 \u21152 \u36733 \u65288 \u20174 \u32531 \u23384 \u20013 \u65289 \
+        if (mapImage.complete) \{\
+            handleMapImageLoad();\
+        \}\
+\
+        /**\
+         * \uc0\u30830 \u20445 \u21152 \u36733 \u21160 \u30011 \u22312 \u22270 \u20687 \u21152 \u36733 \u22833 \u36133 \u26102 \u38544 \u34255 \u24182 \u25552 \u31034 \u29992 \u25143 \
+         */\
+        mapImage.addEventListener('error', () => \{\
+            console.error('\uc0\u22320 \u22270 \u22270 \u20687 \u21152 \u36733 \u22833 \u36133 \u12290 ');\
+            alert('\uc0\u22320 \u22270 \u22270 \u20687 \u21152 \u36733 \u22833 \u36133 \u65292 \u35831 \u26816 \u26597 \u32593 \u32476 \u36830 \u25509 \u25110 \u32852 \u31995 \u31649 \u29702 \u21592 \u12290 ');\
+            if (mapLoadingOverlay) \{\
+                mapLoadingOverlay.style.display = 'none';\
+            \}\
+        \});\
+\
+        // \uc0\u32465 \u23450 \u24038 \u38190 \u28857 \u20987 \u31354 \u30333 \u21306 \u22495 \u28155 \u21152 \u26631 \u35760 \u20107 \u20214 \
+        bindMapClick();\
+    \});\
+    </script>\
+\
+    <!-- \uc0\u28155 \u21152 \u26631 \u35760 \u27169 \u24577 \u26694  -->\
+    <div class="modal fade" id="addMarkModal" tabindex="-1" aria-labelledby="addMarkModalLabel" aria-hidden="true">\
+        <div class="modal-dialog">\
+            <div class="modal-content">\
+                <form id="addMarkForm">\
+                    <div class="modal-header">\
+                        <h5 class="modal-title" id="addMarkModalLabel">\uc0\u28155 \u21152 \u26631 \u35760 </h5>\
+                        <button type="button" class="close" data-dismiss="modal" aria-label="\uc0\u20851 \u38381 ">\
+                            <span aria-hidden="true">&times;</span>\
+                        </button>\
+                    </div>\
+                    <div class="modal-body">\
+                        <!-- CSRF \uc0\u20196 \u29260 \u24050 \u36890 \u36807  meta \u26631 \u31614 \u20256 \u36882 \u65292 \u19981 \u38656 \u35201 \u22312 \u34920 \u21333 \u20013 \u21253 \u21547  -->\
+                        <div class="form-group">\
+                            <label for="mark_x">X \uc0\u22352 \u26631 \u65288 0-100\u65289 </label>\
+                            <input type="number" step="0.01" class="form-control" id="mark_x" name="x" readonly>\
+                        </div>\
+                        <div class="form-group">\
+                            <label for="mark_y">Y \uc0\u22352 \u26631 \u65288 0-100\u65289 </label>\
+                            <input type="number" step="0.01" class="form-control" id="mark_y" name="y" readonly>\
+                        </div>\
+                        <!-- \uc0\u28155 \u21152 \u20026 \u24369 \u30005 \u20117 \u22797 \u36873 \u26694  -->\
+                        <div class="form-group form-check">\
+                            <input type="checkbox" class="form-check-input" id="addAsWeakElectric" name="add_as_weak_electric">\
+                            <label class="form-check-label" for="addAsWeakElectric">\uc0\u28155 \u21152 \u20026 \u24369 \u30005 \u20117 </label>\
+                        </div>\
+                        <div class="form-group">\
+                            <label for="mark_color">\uc0\u39068 \u33394 </label>\
+                            <select class="form-control form-control-sm" id="mark_color" name="color">\
+                                <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                            </select>\
+                        </div>\
+                        <div class="form-group">\
+                            <label for="mark_label">\uc0\u26631 \u31614 </label>\
+                            <input type="text" class="form-control" id="mark_label" name="label" maxlength="100">\
+                        </div>\
+                        <!-- \uc0\u32465 \u23450 WeakElectric\u26631 \u35760  -->\
+                        <div class="row" id="add_bindToWeakElectricContainer">\
+                            <div class="form-group col-md-6">\
+                                <label for="add_select_map_floor">\uc0\u27719 \u32858 \u27004 \u23618 </label>\
+                                <select class="form-control form-control-sm" id="add_select_map_floor" name="select_map_floor">\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u22270 \u32440 /\u27004 \u23618 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                            <div class="form-group col-md-6">\
+                                <label for="add_select_weak_electric">\uc0\u27719 \u32858 \u24369 \u30005 \u20117 </label>\
+                                <select class="form-control form-control-sm" id="add_select_weak_electric" name="select_weak_electric" disabled>\
+                                    <option value="">\uc0\u19981 \u32465 \u23450 </option>\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u24369 \u30005 \u20117 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="modal-footer">\
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">\uc0\u21462 \u28040 </button>\
+                        <button type="submit" class="btn btn-primary">\uc0\u28155 \u21152 \u26631 \u35760 </button>\
+                    </div>\
+                </form>\
+            </div>\
+        </div>\
+    </div>\
+\
+    <!-- \uc0\u32534 \u36753 \u26631 \u35760 \u27169 \u24577 \u26694  -->\
+    <div class="modal fade" id="editMarkModal" tabindex="-1" aria-labelledby="editMarkModalLabel" aria-hidden="true">\
+        <div class="modal-dialog">\
+            <div class="modal-content">\
+                <form id="editMarkForm">\
+                    <div class="modal-header">\
+                        <h5 class="modal-title" id="editMarkModalLabel">\uc0\u32534 \u36753 \u26631 \u35760 </h5>\
+                        <button type="button" class="close" data-dismiss="modal" aria-label="\uc0\u20851 \u38381 ">\
+                            <span aria-hidden="true">&times;</span>\
+                        </button>\
+                    </div>\
+                    <div class="modal-body">\
+                        <input type="hidden" id="edit_mark_id" name="mark_id">\
+                        <div class="form-group">\
+                            <label for="edit_mark_label">\uc0\u26631 \u31614 </label>\
+                            <input type="text" class="form-control" id="edit_mark_label" name="label" maxlength="100">\
+                        </div>\
+                        <div class="form-group">\
+                            <label for="edit_mark_color">\uc0\u39068 \u33394 </label>\
+                            <select class="form-control form-control-sm" id="edit_mark_color" name="color">\
+                                <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                            </select>\
+                        </div>\
+                        <!-- \uc0\u32465 \u23450 WeakElectric\u26631 \u35760 \u65306 \u20998 \u20026 \u36873 \u25321 \u22270 \u32440 \u21517 /\u27004 \u23618 \u21644 \u36873 \u25321 \u24369 \u30005 \u20117  -->\
+                        <div class="row" id="edit_bindToWeakElectricContainer">\
+                            <div class="form-group col-md-6">\
+                                <label for="edit_select_map_floor">\uc0\u27719 \u32858 \u27004 \u23618 </label>\
+                                <select class="form-control form-control-sm" id="edit_select_map_floor" name="select_map_floor">\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u22270 \u32440 /\u27004 \u23618 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                            <div class="form-group col-md-6">\
+                                <label for="edit_select_weak_electric">\uc0\u27719 \u32858 \u24369 \u30005 \u20117 </label>\
+                                <select class="form-control form-control-sm" id="edit_select_weak_electric" name="select_weak_electric" disabled>\
+                                    <option value="">\uc0\u19981 \u32465 \u23450 </option>\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u24369 \u30005 \u20117 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <!-- \uc0\u20462 \u25913 \u21518 \u30340  modal-footer -->\
+                    <div class="modal-footer d-flex justify-content-between">\
+                        <!-- \uc0\u24038 \u20391 \u25353 \u38062 \u32452  -->\
+                        <div>\
+                            <button type="button" class="btn btn-info mr-2" id="showApBindingsButton" style="display: none;">\uc0\u26174 \u31034 AP\u32465 \u23450 </button>\
+                        </div>\
+                        <!-- \uc0\u21491 \u20391 \u25353 \u38062 \u32452  -->\
+                        <div>\
+                            <button type="button" class="btn btn-danger" id="deleteMarkButton">\uc0\u21024 \u38500 \u26631 \u35760 </button>\
+                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">\uc0\u21462 \u28040 </button>\
+                            <button type="submit" class="btn btn-primary">\uc0\u20445 \u23384 \u26356 \u25913 </button>\
+                        </div>\
+                    </div>\
+                </form>\
+            </div>\
+        </div>\
+    </div>\
+\
+    <!-- AP\uc0\u32465 \u23450 \u20449 \u24687 \u27169 \u24577 \u26694  -->\
+    <div class="modal fade" id="apBindingsModal" tabindex="-1" aria-labelledby="apBindingsModalLabel" aria-hidden="true">\
+        <div class="modal-dialog modal-lg">\
+            <div class="modal-content">\
+                <div class="modal-header">\
+                    <h5 class="modal-title">AP\uc0\u32465 \u23450 \u20449 \u24687 </h5>\
+                    <button type="button" class="close" data-dismiss="modal" aria-label="\uc0\u20851 \u38381 ">\
+                        <span aria-hidden="true">&times;</span>\
+                    </button>\
+                </div>\
+                <div class="modal-body">\
+                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u20869 \u23481 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                </div>\
+                <div class="modal-footer">\
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">\uc0\u20851 \u38381 </button>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+\
+    <!-- \uc0\u21024 \u38500 \u30830 \u35748 \u27169 \u24577 \u26694  -->\
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">\
+        <div class="modal-dialog">\
+            <div class="modal-content">\
+                <div class="modal-header">\
+                    <h5 class="modal-title">\uc0\u30830 \u35748 \u21024 \u38500 </h5>\
+                    <button type="button" class="close" data-dismiss="modal" aria-label="\uc0\u20851 \u38381 ">\
+                        <span aria-hidden="true">&times;</span>\
+                    </button>\
+                </div>\
+                <div class="modal-body">\
+                    <p>\uc0\u35813 \u24369 \u30005 \u20117 \u23384 \u22312 AP\u32465 \u23450 \u12290 \u24744 \u30830 \u23450 \u35201 \u21024 \u38500 \u27492 \u26631 \u35760 \u24182 \u35299 \u38500 \u25152 \u26377 \u32465 \u23450 \u20851 \u31995 \u21527 \u65311 </p>\
+                </div>\
+                <div class="modal-footer">\
+                    <button type="button" class="btn btn-danger" id="confirmDeleteAndUnbindButton">\uc0\u30830 \u35748 </button>\
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteButton">\uc0\u21462 \u28040 </button>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    \
+    <!-- \uc0\u37197 \u32622 \u24555 \u25463 \u28155 \u21152 \u27169 \u24577 \u26694  -->\
+    <div class="modal fade" id="quickAddConfigModal" tabindex="-1" aria-labelledby="quickAddConfigModalLabel" aria-hidden="true">\
+        <div class="modal-dialog">\
+            <div class="modal-content">\
+                <form id="quickAddConfigForm">\
+                    <div class="modal-header">\
+                        <h5 class="modal-title" id="quickAddConfigModalLabel">\uc0\u37197 \u32622 \u24555 \u25463 \u28155 \u21152 </h5>\
+                        <button type="button" class="close" data-dismiss="modal" aria-label="\uc0\u20851 \u38381 ">\
+                            <span aria-hidden="true">&times;</span>\
+                        </button>\
+                    </div>\
+                    <div class="modal-body">\
+                        <!-- \uc0\u20165 \u21253 \u21547 \u39068 \u33394 \u12289 \u26631 \u31614 \u21644 \u32465 \u23450 \u24369 \u30005 \u20117  -->\
+                        <div class="form-group">\
+                            <label for="quickAdd_mark_color">\uc0\u39068 \u33394 </label>\
+                            <select class="form-control form-control-sm" id="quickAdd_mark_color" name="color">\
+                                <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                            </select>\
+                        </div>\
+                        <div class="form-group">\
+                            <label for="quickAdd_mark_label">\uc0\u26631 \u31614 </label>\
+                            <input type="text" class="form-control" id="quickAdd_mark_label" name="label" maxlength="100">\
+                        </div>\
+                        <!-- \uc0\u26032 \u22686 \u30340 \'93\u24555 \u36895 \u26631 \u31614 \'94\u22797 \u36873 \u26694  -->\
+                        <div class="form-group form-check">\
+                            <input type="checkbox" class="form-check-input" id="quickAdd_auto_label" name="auto_label">\
+                            <label class="form-check-label" for="quickAdd_auto_label">\uc0\u24555 \u36895 \u26631 \u31614 </label>\
+                        </div>\
+                        <!-- \uc0\u32465 \u23450 WeakElectric\u26631 \u35760 \u65306 \u20998 \u20026 \u36873 \u25321 \u22270 \u32440 \u21517 /\u27004 \u23618 \u21644 \u36873 \u25321 \u24369 \u30005 \u20117  -->\
+                        <div class="row" id="quickAdd_bindToWeakElectricContainer">\
+                            <div class="form-group col-md-6">\
+                                <label for="quickAdd_select_map_floor">\uc0\u27719 \u32858 \u27004 \u23618 </label>\
+                                <select class="form-control form-control-sm" id="quickAdd_select_map_floor" name="select_map_floor">\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u22270 \u32440 /\u27004 \u23618 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                            <div class="form-group col-md-6">\
+                                <label for="quickAdd_select_weak_electric">\uc0\u27719 \u32858 \u24369 \u30005 \u20117 </label>\
+                                <select class="form-control form-control-sm" id="quickAdd_select_weak_electric" name="select_weak_electric" disabled>\
+                                    <option value="">\uc0\u19981 \u32465 \u23450 </option>\
+                                    <!-- \uc0\u21160 \u24577 \u29983 \u25104 \u30340 \u24369 \u30005 \u20117 \u36873 \u39033 \u23558 \u25554 \u20837 \u36825 \u37324  -->\
+                                </select>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="modal-footer">\
+                        <!-- \uc0\u28155 \u21152 \'93\u28165 \u38500 \u37197 \u32622 \'94\u25353 \u38062  -->\
+                        <button type="button" class="btn btn-secondary" id="clearQuickAddConfigButton">\uc0\u28165 \u38500 \u37197 \u32622 </button>\
+                        <button type="submit" class="btn btn-primary">\uc0\u20445 \u23384 \u37197 \u32622 </button>\
+                    </div>\
+                </form>\
+            </div>\
+        </div>\
+    </div>\
+</body>\
+</html>\
+\
+}
